@@ -1,0 +1,88 @@
+<div class="container mt-100 me-30 " *ngIf="department">
+  <!-- Tableau Département -->
+  <div class="container d-flex justify-content-center mt-4">
+    <div class="card mb-4" style="width: 70rem;">
+      <div class="card-body">
+        <h2 class="card-title card-header text-center fw-bold">{{ department.name }}</h2>
+        <p><strong>Créé le :</strong> {{ department.createdAt | date:'medium' }}</p>
+        <p><strong>Description :</strong> {{ department.description }}</p>
+        <a routerLink="/production" class="btn btn-primary">Production</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau Utilisateurs -->
+  <div class="mb-4">
+    <h3>Personnel</h3>
+    <div class="d-flex justify-content-between align-items-center">
+      <button class="btn btn-success me-2 mb-3 " style="width: 15em" routerLink="/add-editUser">Ajouter Personnel</button>
+
+      <form class="d-flex" role="search" style="width: 20em">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+    <table class="table table-bordered" style="width: 70rem;">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Fonction</th>
+        <th>Action</th> <!-- Colonne d'action pour modifier -->
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.surname }}</td>
+        <td>{{ user.poste}}</td>
+        <td class="d-flex justify-content-between align-items-center " style="width: 10em">
+          <button class="btn btn-info  me-3" [routerLink]="['/detailsUser', user.id]">Details</button>
+          <button class="btn btn-warning me-3" [routerLink]="['/add-editUser', user.id]">Modifier</button>
+          <button class="btn btn-danger me-3" (click)="supprimerersonnel(user.id)">Supprimer</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tableau Équipements -->
+  <div class="mb-4">
+    <h3>Équipements associés</h3>
+    <div class="d-flex justify-content-between align-items-center">
+      <button class="btn btn-success me-2 mb-3 " style="width: 15em"  routerLink="/add-editEquipement">Ajouter Equipment</button>
+      <form class="d-flex" role="search" style="width: 20em">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit" (click)="search()">Search</button>
+      </form>
+    </div>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Action</th> <!-- Colonne d'action pour modifier -->
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let equip of equipments">
+        <td>{{ equip.id }}</td>
+        <td>{{ equip.name }}</td>
+        <td>{{ equip.description }}</td>
+        <td class="d-flex justify-content-between align-items-center " style="width: 10em">
+          <button class="btn btn-info me-3" [routerLink]="['/detailsEquipment', equip.id]">Détails</button>
+          <button class="btn btn-warning me-3" [routerLink]="['/add-editEquipement', equip.id]">Modifier</button>
+          <button class="btn btn-danger me-3" (click)="supprimerEquipment(equip.id)">Supprimer</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="!department" class="container mt-4">
+  Chargement du département...
+</div>

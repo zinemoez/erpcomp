@@ -1,0 +1,127 @@
+<div class="container mt-100 me-30" *ngIf="equipment">
+  <div class="card mb-4 container d-flex justify-content-center mt-4" style="width: 40rem;">
+    <div class="card-body text-center">
+      <h2 class="card-title fw-bold">{{ equipment.id }} </h2>
+      <p><strong>Actif :</strong> {{ equipment.name }}</p>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="card mb-4" style="width: 70rem;">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label"><strong>Id :</strong></label>
+              <input type="text" class="form-control" [value]="equipment.id" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><strong>Nom:</strong></label>
+              <input type="text" class="form-control" [value]="equipment.name" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><strong>Description et Historique:</strong></label>
+              <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Description et Historique
+                    </button>
+                  </h2>
+                  <div id="collapseOne"  class="accordion-collapse collapse"  data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      {{ equipment.description }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+          </div>
+              <div class="col-md-6">
+                <div class="mb-5">
+                  <label class="form-label"><strong>Mise en service a :</strong></label>
+                  <input type="text" class="form-control" [value]="equipment.dateMiseEnService" disabled>
+                </div>
+                <div class="mb-5">
+                  <button class="btn btn-primary" (click)="getInterventionsByEquipment(equipment.id)">
+                    Afficher les bons des travail
+                  </button>
+                  <div class="modal fade" id="interventionsModal" tabindex="-1" aria-labelledby="interventionsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Liste des bons des travail</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+                        <div class="modal-body">
+                          <table class="table table-bordered table-hover" >
+                            <thead class="table">
+                            <tr>
+                              <th>Titre</th>
+                              <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let int of interventions">
+                              <td>{{ int.title }}</td>
+                              <td>{{ int.status }}</td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-1">
+                  <button class="btn btn-primary" (click)="getPiecesByEquipment(equipment.id)">
+                    Afficher les pièces
+                  </button>
+                  <div class="modal fade" id="piecesModal" tabindex="-1" aria-labelledby="piecesModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Liste des pièces</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+                        <div class="modal-body">
+                          <table class="table table-bordered table-hover" *ngIf="pieces.length > 0; else noData">
+                            <thead class="table">
+                            <tr>
+                              <th>ID</th>
+                              <th>Nom</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let piece of pieces">
+                              <td>{{ piece.id }}</td>
+                              <td>{{ piece.name }}</td>
+                            </tr>
+                            </tbody>
+                          </table>
+                          <ng-template #noData>
+                            <p class="text-center text-muted">Aucune pièce trouvée.</p>
+                          </ng-template>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+              <div class="text-end mt-4 d-flex justify-content-between">
+                <button class="btn btn-info me-3" [routerLink]="['/department', equipment.departmentId]">Department
+                </button>
+                <button class="btn btn-warning me-3" [routerLink]="['/add-editEquipement', equipment.id]">Modifier</button>
+                <button class="btn btn-danger me-3" (click)="supprimerEquipment(equipment.id)">Supprimer</button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

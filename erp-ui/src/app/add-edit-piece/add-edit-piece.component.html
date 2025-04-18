@@ -1,0 +1,120 @@
+<div class="container mt-5">
+  <h2 class="mb-4">{{ isEditing ? 'Modifier une piece' : 'Ajouter une piece' }}</h2>
+
+  <form (ngSubmit)="handleSubmit($event)" >
+        <div class="modal-body">
+          <div class="row">
+            <!-- Colonne gauche -->
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="id" class="form-label"><strong>Id</strong></label>
+                <input type="text" class="form-control" id="id" [(ngModel)]="id" name="id" >
+              </div>
+
+              <div class="mb-3">
+                <label for="name" class="form-label"><strong>Nom</strong></label>
+                <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label"><strong>Description</strong></label>
+                <input type="text" class="form-control" id="description" [(ngModel)]="description" name="description" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="sku" class="form-label"><strong>SKU</strong></label>
+                <input type="text" class="form-control" id="sku" [(ngModel)]="sku" name="sku" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="price" class="form-label"><strong>Prix</strong></label>
+                <input type="number" class="form-control" id="price" [(ngModel)]="price" name="price" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="stockQuantity" class="form-label"><strong>Stock</strong></label>
+                <input type="number" class="form-control" id="stockQuantity" [(ngModel)]="stockQuantity" name="stockQuantity" required>
+              </div>
+            </div>
+
+            <!-- Colonne droite -->
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="equipmentId" class="form-label"><strong>Équipement</strong></label>
+                <select class="form-select" id="equipmentId" [(ngModel)]="equipmentId" name="equipmentId" required>
+                  <option *ngFor="let p of equipements" [value]="p.id">{{ p.id }}</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="categorieId" class="form-label"><strong>Catégorie</strong></label>
+                <select class="form-select" id="categorieId" [(ngModel)]="categorieId" name="categorieId" required>
+                  <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="expiryDate" class="form-label"><strong>Date d'expiration</strong></label>
+                <input type="date" class="form-control" id="expiryDate" [(ngModel)]="expiryDate" name="expiryDate" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="createdAt" class="form-label"><strong>Date de création</strong></label>
+                <input type="date" class="form-control" id="createdAt" [(ngModel)]="createdAt" name="createdAt" [readonly]="true" >
+              </div>
+
+              <div class="mb-3" *ngIf="isEditing">
+                <label for="updatedAt" class="form-label"><strong>Date de modification</strong></label>
+                <input type="date" class="form-control" id="updatedAt" [(ngModel)]="updatedAt" name="updatedAt" required>
+              </div>
+
+
+              <div class="mb-5">
+                <button class="btn btn-primary" (click)="getInterventionsByPiece(piece.id)">
+                  Afficher les bons des travail
+                </button>
+                <div class="modal fade" id="interventionsModal" tabindex="-1" aria-labelledby="interventionsModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Liste des bons des travail</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                      </div>
+                      <div class="modal-body">
+                        <table class="table table-bordered table-hover" >
+                          <thead class="table">
+                          <tr>
+                            <th>Titre</th>
+                            <th>Status</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let int of interventions">
+                            <td>{{ int.title }}</td>
+                            <td>{{ int.status }}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary"  >
+            {{ isEditing ? 'Mettre à jour' : 'Créer' }}
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="goBack()">Fermer</button>
+        </div>
+      </form>
+    </div>
+
+

@@ -1,0 +1,106 @@
+<div class="container mt-5">
+  <h2 class="mb-4">{{ isEditing ? 'Modifier un utilisateur' : 'Ajouter un utilisateur' }}</h2>
+
+  <!-- Message d'état -->
+  <div *ngIf="message" class="alert alert-info">{{ message }}</div>
+
+  <form (ngSubmit)="handleSubmit($event)" >
+    <div class="row">
+      <!-- Colonne gauche -->
+      <div class="col-md-6">
+
+        <!-- ID -->
+        <div class="mb-3">
+          <label for="id" class="form-label"><strong>Id</strong></label>
+          <input type="number" class="form-control" id="id" [(ngModel)]="id" name="id" [readonly]="isEditing">
+        </div>
+
+        <!-- Nom -->
+        <div class="mb-3">
+          <label for="name" class="form-label"><strong>Nom</strong></label>
+          <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name" required>
+        </div>
+
+        <!-- Prénom -->
+        <div class="mb-3">
+          <label for="surname" class="form-label"><strong>Prénom</strong></label>
+          <input type="text" class="form-control" id="surname" [(ngModel)]="surname" name="surname" required>
+        </div>
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label"><strong>Email</strong></label>
+          <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email" required>
+        </div>
+        <!-- Mot de passe -->
+        <div class="mb-3">
+          <label for="password" class="form-label"><strong>Mot de passe</strong></label>
+          <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" [required]="!isEditing">
+        </div>
+        <!-- Téléphone -->
+        <div class="mb-3">
+          <label for="phoneNumber" class="form-label"><strong>Numero de telephone</strong></label>
+          <input type="text" class="form-control" id="phoneNumber" [(ngModel)]="phoneNumber" name="phoneNumber" required>
+        </div>
+
+          <div class="mb-3">
+            <label for="adresse" class="form-label"><strong>Adresse</strong></label>
+            <input type="text" class="form-control" id="adresse" [(ngModel)]="adresse" name="adresse" required>
+          </div>
+        </div>
+        <!-- CIN -->
+
+
+
+      <!-- Colonne droite -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="cin" class="form-label"><strong>C.I.N</strong></label>
+          <input type="number" class="form-control" id="cin" [(ngModel)]="cin" name="cin" required>
+        </div>
+
+        <!-- Date de naissance -->
+        <div class="mb-3">
+          <label for="naissance" class="form-label"><strong>Date de naissance</strong></label>
+          <input type="date" class="form-control" id="naissance"  [ngModel]="naissance" name="naissance" required>
+        </div>
+
+        <!-- Poste -->
+        <div class="mb-3">
+          <label for="poste" class="form-label"><strong>Poste</strong></label>
+          <select class="form-select" id="poste" [(ngModel)]="poste" name="poste" required>
+            <option *ngFor="let p of postes" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+
+        <!-- Catégorie -->
+        <div class="mb-3">
+          <label for="categorie" class="form-label"><strong>Catégorie</strong></label>
+          <input type="text" class="form-control" id="categorie" [(ngModel)]="categorie" name="categorie" required>
+        </div>
+
+        <!-- Rôle (radio buttons) -->
+        <div class="mb-3">
+          <label for="role" class="form-label"><strong>Role</strong></label>
+          <select class="form-select" id="role" [(ngModel)]="role" name="role" required>
+            <option *ngFor="let r of roles" [value]="r">{{r}}</option>
+          </select>
+        </div>
+
+        <!-- Département (radio buttons) -->
+        <div class="mb-3">
+          <label for="departmentId" class="form-label"><strong>departmentId</strong></label>
+          <select class="form-select" id="departmentId" [(ngModel)]="departmentId" name="departmentId" required>
+            <option *ngFor="let p of departments" [value]="p.id">{{ p.id }}</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Boutons -->
+    <div class="text-end mt-4">
+      <button type="button" (click)="handleSubmit($event)" class="btn btn-primary" >{{ isEditing ? 'Mettre à jour' : 'Créer' }}</button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="goBack()">Retour</button>
+    </div>
+  </form>
+</div>

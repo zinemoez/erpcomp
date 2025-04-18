@@ -1,0 +1,5 @@
+export enum Priority {
+  URGENCEA = 'URGENCEA',
+  URGENCEB = 'URGENCEB',
+  ATECHNIQUE = 'ATECHNIQUE'
+}

@@ -1,0 +1,29 @@
+.navbar {
+  background-color: #2b7149 !important;
+  color: white; /* Texte en blanc */
+}
+.nav-link{
+  color:black;
+  font-weight: bold;
+  font-size: 20px;
+}
+.btn btn-outline-success{
+  color:black;
+}
+.navbar-brand{
+  font-weight: bold;
+  font-size: 30px;
+  color:white
+
+}
+.dropdown-item:hover {
+  background-color: #86cf9f !important; /* Vert légèrement plus foncé au survol */
+  color: #100f0f !important; /* Texte encore plus foncé */
+}
+.dropdown-item{
+  font-weight: bold;
+}
+
+body {
+  padding-top: 70px; /* Ajuste selon la hauteur réelle de ta navbar */
+}

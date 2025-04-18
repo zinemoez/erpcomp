@@ -1,0 +1,150 @@
+<div class="container mt-3">
+  <h2 class="mb-4">{{ isEditing ? 'Modifier l\'intervention' : 'Créer une Intervention' }}</h2>
+
+  <form (ngSubmit)="handleSubmit($event)">
+    <div class="row">
+      <!-- Colonne gauche -->
+      <div class="col-md-6">
+
+        <!-- ID -->
+        <div class="mb-3">
+          <label for="id" class="form-label"><strong>ID</strong></label>
+          <input type="number" class="form-control" id="id" [(ngModel)]="id" name="id" [readonly]="isEditing">
+        </div>
+
+        <!-- Titre -->
+        <div class="mb-3">
+          <label for="title" class="form-label"><strong>Titre</strong></label>
+          <input type="text" class="form-control" id="title" [(ngModel)]="title" name="title" required>
+        </div>
+
+        <!-- Priorité -->
+        <div class="mb-3">
+          <label for="priority" class="form-label"><strong>Priorité</strong></label>
+          <select class="form-select" id="priority" [(ngModel)]="priority" name="priority" required>
+            <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+
+        <!-- Statut -->
+        <div class="mb-3">
+          <label for="status" class="form-label"><strong>Statut</strong></label>
+          <select class="form-select" id="status" [(ngModel)]="status" name="status" required>
+            <option *ngFor="let s of statuss" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+
+        <!-- Type -->
+        <div class="mb-3">
+          <label for="type" class="form-label"><strong>Type</strong></label>
+          <select class="form-select" id="type" [(ngModel)]="type" name="type" required>
+            <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+
+
+        <div class="mb-3">
+          <label for="approvedBy" class="form-label"><strong>Approuvé par</strong></label>
+          <select class="form-select" id="approvedBy" [(ngModel)]="approvedBy" name="approvedBy" required>
+            <option *ngFor="let u of users" [ngValue]="u">{{ u.name }} {{ u.surname }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label"><strong>Description</strong></label>
+          <textarea class="form-control" id="description" [(ngModel)]="description" name="description" rows="4" required></textarea>
+        </div>
+
+
+      </div>
+
+      <!-- Colonne droite -->
+      <div class="col-md-6">
+
+        <!-- Description -->
+
+        <!-- Personnel -->
+
+        <div class="mb-3">
+          <label class="form-label"><strong>Pièces Affectées</strong></label>
+          <div class="checkbox-list-container">
+            <div *ngFor="let piece of pieces">
+              <div class="form-check checkbox-list-container">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [id]="'piece-' + piece.id"
+                  [checked]="isPieceSelected(piece)"
+                  (change)="onPieceCheckboxChange($event, piece)">
+
+                <label class="form-check-label" [for]="'piece-' + piece.id">
+                  {{ piece.name }} ({{ piece.description }})
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <label>
+          <div>
+          <h6 *ngFor="let piece of pieceIds">{{piece.id}}, </h6>
+          </div>
+        </label>
+
+        <!-- Pièces -->
+        <div class="mb-3">
+          <label class="form-label"><strong>Pièces Affectées</strong></label>
+          <div class="checkbox-list-container">
+          <div *ngFor="let user of users">
+            <div class="form-check checkbox-list-container">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [id]="'user-' + user.id"
+                [checked]="isUserSelected(user)"
+                (change)="onUserCheckboxChange($event, user)">
+              <label class="form-check-label" [for]="'user-' + user.id">
+                {{ user.name }} {{ user.surname }} {{user.poste}}
+              </label>
+            </div>
+          </div>
+        </div>
+        </div>
+
+
+
+        <!-- Date création -->
+        <div class="mb-3">
+          <label for="createdAt" class="form-label"><strong>Créé le</strong></label>
+          <input type="datetime-local" class="form-control" id="createdAt" [(ngModel)]="createdAt" name="createdAt">
+        </div>
+
+        <!-- Date MAJ -->
+        <div class="mb-3">
+          <label for="updatedAt" class="form-label"><strong>Mis à jour le</strong></label>
+          <input type="datetime-local" class="form-control" id="updatedAt" [(ngModel)]="updatedAt" name="updatedAt">
+        </div>
+
+        <!-- Mis à jour par -->
+        <div class="mb-3">
+          <label for="updatedBy" class="form-label"><strong>Mis à jour par</strong></label>
+          <input type="text" class="form-control" id="updatedBy" [(ngModel)]="updatedBy" name="updatedBy">
+        </div>
+
+        <!-- Département -->
+        <div class="mb-3">
+          <label for="equipmentId" class="form-label"><strong>Equipment</strong></label>
+          <select class="form-select" id="equipmentId" [(ngModel)]="equipmentId" name="equipmentId" required>
+            <option *ngFor="let d of equipments" [ngValue]="d">{{ d.name }}</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Boutons -->
+    <div class="text-end mt-4">
+      <button type="submit" class="btn btn-primary">{{ isEditing ? 'Mettre à jour' : 'Créer' }}</button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="goBack()">Retour</button>
+    </div>
+  </form>
+</div>

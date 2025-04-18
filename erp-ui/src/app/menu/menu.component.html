@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg bg-success  " >
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">ERP-GCT</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" routerLink="/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" routerLink="/production">Production</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Usine
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/department">Departement</a></li>
+            <li><a class="dropdown-item" routerLink="/equipment">Equipement</a></li>
+            <li><a class="dropdown-item" routerLink="/users">Resources Humaines</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            GMAO
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/intervention">Bon de travail</a></li>
+            <li><a class="dropdown-item" routerLink="/equipment">Equipement</a></li>
+            <li><a class="dropdown-item" routerLink="/piece">Pieces</a></li>
+            <li><a class="dropdown-item" routerLink="/stock">Gestion de Stock</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="d-flex ms-auto align-items-center">
+        <form class="d-flex me-3" role="search">
+          <button class="btn btn-outline-success me-2" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+          <input class="form-control" type="search" placeholder="Search..." aria-label="Search">
+        </form>
+        <a class="nav-link active me-3" aria-current="page" routerLink="/profil">
+          <i class="fa-solid fa-user fa-lg fa-4x text-white"></i>
+        </a>
+        <button class="btn btn-danger" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</nav>
+

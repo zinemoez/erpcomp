@@ -1,0 +1,21 @@
+package com.erp.erp.enums;
+
+public enum Poste {
+    MAINOEUVRE,
+    OPERATEUR,
+    CHEFDEQUIPE,
+    MECANISIEN,
+    SOUDEUR,
+    ELECTRECIEN,
+    CONSIERGE,
+    CHAUFFEUR,
+    INGENIEUR,
+    CHEFSERVICE,
+    CHEFDEVISION,
+    DIRECTEUR,
+    ADMINISTRATEUR,
+    POINTEAU,
+    TECHNECIENSUPERIEUR,
+    CONTREMAITRE
+
+}

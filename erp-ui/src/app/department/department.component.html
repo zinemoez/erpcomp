@@ -1,0 +1,30 @@
+<!-- Sidebar -->
+<nav class="d-flex flex-column bg-dark text-white p-3" style="width: 200px; height: 100vh;">
+  <h4 class="mb-4">Menu</h4>
+
+  <!-- Lien principal -->
+  <a routerLink="/profil" class="nav-link text-white mb-2 item">
+    <i class="fas fa-home me-2"></i> Profil
+  </a>
+
+  <!-- Lien de section avec sous-liens affichés directement -->
+  <div class="mb-2">
+    <div class="nav-link text-white mb-1 item">
+      <i class="fas fa-building me-2"></i> Usine
+    </div>
+    <div class="ms-3 d-flex flex-column">
+      <a
+        *ngFor="let dep of departments"
+        class="nav-link text-white mb-1 sous-item"
+        [routerLink]="['/department', dep.id]"
+      >
+        ➤ {{ dep.name }}
+      </a>
+
+      <!-- Liens statiques -->
+      <a class="nav-link text-white mb-1 sous-item" routerLink="/equipment">➤ Ajouter Departement</a>
+
+    </div>
+  </div>
+
+</nav>
