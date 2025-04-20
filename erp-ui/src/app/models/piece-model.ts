@@ -1,4 +1,6 @@
 import {Intervention} from "./intervention-model";
+import {Category} from "./category";
+import {Equipment} from "./equipment-model";
 
 export class Piece{
   id!: string;
@@ -10,7 +12,7 @@ export class Piece{
   expiryDate!: Date;
   updatedAt!: Date;
   createdAt!: Date;
-  equipmentId!: string;
-  categorieId!: string;
+  equipmentId!: Equipment;
+  categorieId!: Category;
   interventions!: Intervention[];
 }

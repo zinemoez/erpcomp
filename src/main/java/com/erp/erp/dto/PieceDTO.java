@@ -1,5 +1,7 @@
 package com.erp.erp.dto;
 
+import com.erp.erp.entity.Category;
+import com.erp.erp.entity.Equipment;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -20,7 +22,7 @@ public class PieceDTO {
 
     private String id;
     private String name;
-    private Long categoryId;
+    private Category category;
     private String sku;
     private BigDecimal price;
     private Integer stockQuantity;
@@ -28,7 +30,6 @@ public class PieceDTO {
     private Date expiryDate;
     private Date  updatedAt;
     private Date createdAt;
-    private String equipmentId;
-    private List<String> interventions;
+    private Equipment equipmentId;
 
 }

@@ -111,9 +111,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("User not found with ID: " + id));
 
         if (userDTO.getEmail() != null) existingUser.setEmail(userDTO.getEmail());
+        if (userDTO.getNaissance() != null) existingUser.setNaissance(userDTO.getNaissance());
         if (userDTO.getName() != null) existingUser.setName(userDTO.getName());
         if (userDTO.getPhoneNumber() != null) existingUser.setPhoneNumber(userDTO.getPhoneNumber());
         if (userDTO.getRole() != null) existingUser.setRole(userDTO.getRole());
+        if (userDTO.getAdresse() != null) existingUser.setAdresse(userDTO.getAdresse());
+        if (userDTO.getCin() != null) existingUser.setCin(userDTO.getCin());
         if (userDTO.getPoste() != null) existingUser.setPoste(userDTO.getPoste());
         if (userDTO.getCategorie() != null) existingUser.setCategorie(userDTO.getCategorie());
 

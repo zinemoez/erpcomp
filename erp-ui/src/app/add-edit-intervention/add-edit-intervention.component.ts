@@ -15,6 +15,7 @@ import {InterventionService} from "../services/intervention-service.service";
 import {PieceService} from "../services/piece-service.service";
 import {ApiService} from "../services/api.service";
 import {Status} from "../models/etat-model";
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-add-edit-intervention',
@@ -67,19 +68,19 @@ export class AddEditInterventionComponent implements OnInit{
   staffIds!: User[];
   description!: string;
   pieceIds!: Piece[];
-  createdAt!: Date;
+  createdAt!: string;
   createdBy: User=this.currentUser;
-  updatedAt!: Date;
+  updatedAt!: string;
   updatedBy!: User
   priority!: Priority;
 
   ngOnInit(): void {
     this.interventionId = Number(this.route.snapshot.paramMap.get('id'));
-     this.getPieces();
+     this.pieces=this.getPieces();
     this.priorities = this.getPriority();
     this.types = this.getType();
     this.statuss = this.getEtat();
-   this.getUsers();
+   this.users=this.getUsers();
     console.log(this.users)
     this.getEquipments()
     this.getCurrentUser()
@@ -113,7 +114,7 @@ getEquipments(): any {
     });
   }
 
-  getUsers(): void {
+  getUsers(): any {
     this.userService.getAllUsers().subscribe({
       next: (res) => {
         this.users = res;
@@ -128,8 +129,6 @@ getEquipments(): any {
       next: (res) => {this.currentUser=res;
         console.log("current user:", this.currentUser); },
       error: (err) => console.error(err.error.message),
-
-
     })
   }
 
@@ -139,25 +138,23 @@ getEquipments(): any {
       error: (err) => console.error(err.error.message),
     });
   }
-  getInterventionById(interventionId: number): void {
+  getInterventionById(interventionId: number): any {
     this.interventionService.getInterventionById(interventionId).subscribe({
       next: (res) => {
-        console.log("interventionById:", this.intervention);
-        this.intervention= res;
-        // Populate form fields from existing user data
+        console.log("interventionByIdcurrent:", res);
         this.id = res.id;
         this.title = res.title ;
         this.priority = res.priority;
         this.status = res.status;
         this.type = res.type;
-        this.createdAt= res.createdAt;
+        this.createdAt= this.formatDate(res.createdAt);
         this.createdBy = res.createdBy;
         this.approvedBy= res.approvedBy;
         this.description = res.description;
         this.staffIds= res.staffIds;
         this.pieceIds = res.pieceIds;
         this.equipmentId=res.equipmentId
-        this.updatedAt=res.updatedAt
+        this.updatedAt=this.formatDate(res.updatedAt)
         this.updatedBy=res.updatedBy
       },
       error: (err) => console.error(err),
@@ -173,7 +170,8 @@ getEquipments(): any {
     res.priority = this.priority;
     res.status = this.status;
     res.type = this.type;
-    res.createdAt = this.createdAt;
+    res.createdAt = new Date(this.createdAt);
+    res.updatedAt=new Date(this.updatedAt)
     res.createdBy = this.createdBy;
     res.approvedBy = this.approvedBy;
     res.description = this.description;
@@ -281,7 +279,13 @@ getEquipments(): any {
       this.pieceIds = this.pieceIds?.filter(p => p.id !== piece.id); // Supprime l'objet Piece de pieceIds
     }
   }
-
+  formatDate(dateString: string | Date): string {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (`0${date.getMonth() + 1}`).slice(-2);
+    const day = (`0${date.getDate()}`).slice(-2);
+    return `${year}-${month}-${day}`;
+  }
 
 
 }

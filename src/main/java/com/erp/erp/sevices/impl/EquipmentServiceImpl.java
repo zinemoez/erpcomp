@@ -51,6 +51,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         Equipment equipment = equipmentRepository.findById(id).orElseThrow(() -> new RuntimeException("equipment not found with id"));
         equipment.setDateMiseEnService(equipmentDTO.getDateMiseEnService());
         equipment.setDescription(equipmentDTO.getDescription());
+        equipment.setName(equipmentDTO.getName());
 
         if (equipmentDTO.getPieces() != null) {
             List<Piece> pieces = equipmentDTO.getPieces().stream()

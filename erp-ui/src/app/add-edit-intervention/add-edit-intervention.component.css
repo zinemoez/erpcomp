@@ -1,9 +1,16 @@
 .checkbox-list-container {
   max-height:   100px; /* Définissez la hauteur maximale que vous souhaitez */
   overflow-y: auto;  /* Ajoute une barre de défilement verticale si le contenu dépasse la hauteur */
-  padding-right: 10px; /* Optionnel : Pour ajouter un peu d'espace à droite */
+  padding-right: 10px;
+  border-radius: 3px/* Optionnel : Pour ajouter un peu d'espace à droite */
 }
 .container{
   background-color: #d6dddd;
   border-radius: 15px;
+}
+.equipment{
+  max-height:   50px; /* Définissez la hauteur maximale que vous souhaitez */
+  overflow-y: auto;  /* Ajoute une barre de défilement verticale si le contenu dépasse la hauteur */
+  padding-right: 10px;
+  border-radius: 3px
 }

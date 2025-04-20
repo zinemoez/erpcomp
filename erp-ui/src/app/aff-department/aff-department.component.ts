@@ -9,6 +9,7 @@ import {UserService} from "../services/user-service.service";
 import {User} from "../models/user-model";
 import {FormsModule} from "@angular/forms";
 import {Equipment} from "../models/equipment-model";
+import {DepartmentComponent} from "../department/department.component";
 
 @Component({
   selector: 'app-aff-department',
@@ -19,7 +20,8 @@ import {Equipment} from "../models/equipment-model";
     NgIf,
     JsonPipe,
     RouterLink,
-    FormsModule
+    FormsModule,
+    DepartmentComponent
   ],
   providers:[DepartmentService],
   templateUrl: './aff-department.component.html',

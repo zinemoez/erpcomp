@@ -16,7 +16,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
@@ -39,13 +43,16 @@ public class InterventionServiceImpl implements InterventionService {
     public InterventionDTO updateIntervention(int id,InterventionDTO interventionDTO) {
         Intervention intervention = interventionRepository.findById(id).orElseThrow(() -> new RuntimeException("intervention not found with id" ));
         intervention.setPriority(interventionDTO.getPriority());
-        intervention.setStatus(interventionDTO.getStatus());
+        if(Objects.equals(userService.getCurrentLoggedInUser().getId(), interventionDTO.getApprovedBy().getId()))
+        {intervention.setStatus(interventionDTO.getStatus());}
         UserDTO userDTO=userService.getCurrentLoggedInUser();
         User user=modelMapper.map(userDTO, User.class);
         intervention.setUpdatedBy(user);
+        intervention.setUpdatedAt(LocalDateTime.now());
+        intervention.setTitle(intervention.getTitle());
+        intervention.setCreatedBy(modelMapper.map(interventionDTO.getCreatedBy(), User.class));
         intervention.setApprovedBy(userRepository.findById(interventionDTO.getApprovedBy().getId()).orElseThrow(() -> new NotFoundException("Equipment not found with ID")));
         intervention.setDescription(interventionDTO.getDescription());
-
         intervention.setPieces(interventionDTO.getPieces());
         intervention.setStaff(interventionDTO.getStaffIds());
         interventionRepository.save(intervention);

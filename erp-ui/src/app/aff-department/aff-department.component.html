@@ -1,3 +1,7 @@
+<div class="d-flex">
+  <div>
+    <app-department></app-department>
+  </div>
 <div class="container mt-100 me-30 " *ngIf="department">
   <!-- Tableau Département -->
   <div class="container d-flex justify-content-center mt-4">
@@ -10,7 +14,6 @@
       </div>
     </div>
   </div>
-
   <!-- Tableau Utilisateurs -->
   <div class="mb-4">
     <h3>Personnel</h3>
@@ -84,5 +87,11 @@
 </div>
 
 <div *ngIf="!department" class="container mt-4">
-  Chargement du département...
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+
 </div>

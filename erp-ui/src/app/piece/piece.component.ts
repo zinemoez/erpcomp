@@ -47,8 +47,8 @@ export class PieceComponent implements OnInit {
   expiryDate!: Date;
   updatedAt: Date=new Date();
   createdAt!: Date;
-  equipmentId!: string;
-  categorieId!:string
+  equipmentId!: Equipment;
+  categorieId!:Category
 
 
   equipements: Equipment[] = [];

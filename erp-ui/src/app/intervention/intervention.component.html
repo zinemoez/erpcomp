@@ -24,6 +24,15 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="javascript:void(0);"
+              role="button"
+              (click)="getInterventionsByApprovedBy(currentUser.id)">
+              Bon en attente d'approbation
+            </a>
+          </li>
 
           <li class="nav-item">
             <a class="nav-link active" href="#" role="button" aria-current="page"
@@ -42,15 +51,16 @@
 
   <!-- Table -->
   <table class="table table-bordered table-striped mt-4">
-    <thead class="thead-dark">
+    <thead class="thead-dark  " style="font-size: 13px">
     <tr>
-      <th>Id</th>
-      <th>Titre</th>
-      <th>Type</th>
+      <th >Id</th>
+      <th >Titre</th>
+      <th >Type</th>
       <th>Equipement</th>
       <th>Cree par</th>
       <th>Approbation Requis</th>
       <th>Status</th>
+      <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -64,11 +74,13 @@
       <td>{{ intervention.approvedBy.name}} {{ intervention.approvedBy.surname}}</td>
       <td>{{ intervention.status}}</td>
 
-      <td>
+      <td  class="d-flex" *ngIf="intervention?.approvedBy?.id === currentUser?.id">
         <!-- Modifier -->
-        <button class="btn btn-primary btn-sm"
-                (click)="isEditing = true; getInterventionById(intervention.id)"
-                [routerLink]="['/add-editIntervention',intervention.id]">
+        <button
+          class="btn btn-primary btn-sm"
+
+          (click)="isEditing = true; getInterventionById(intervention.id)"
+          [routerLink]="['/add-editIntervention', intervention.id]">
           Modifier
         </button>
 

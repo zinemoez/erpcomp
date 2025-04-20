@@ -8,6 +8,8 @@ import {EquipmentService} from "../services/equipment-service.service";
 import {Equipment} from "../models/equipment-model";
 import {Piece} from "../models/piece-model";
 import Swal from "sweetalert2";
+import {User} from "../models/user-model";
+import {ApiService} from "../services/api.service";
 
 @Component({
   selector: 'app-intervention',
@@ -26,6 +28,7 @@ export class InterventionComponent implements OnInit {
   interventions!: Intervention[];
   intervention!: Intervention
   isEditing = false
+  currentUser!:User
 
   searchTerm: string = '';
   filteredInterventions: any[] = [];
@@ -34,7 +37,7 @@ export class InterventionComponent implements OnInit {
   pageSize: number = 5; // nombre de pièces par page
   totalPages: number = 1;
 
-  constructor(private interventionService: InterventionService, private equipmentService: EquipmentService) {
+  constructor(private interventionService: InterventionService,private apiService:ApiService, private equipmentService: EquipmentService) {
 
   }
 
@@ -42,9 +45,18 @@ export class InterventionComponent implements OnInit {
   ngOnInit(): void {
     this.getEquipements()
     this.getInterventions()
+    this.getCurrentUser()
   }
 
+  getCurrentUser(){
+    this.apiService.getLoggedInUserInfo().subscribe({
+      next: (res) => {this.currentUser=res;
+        console.log("current user:", this.currentUser); },
+      error: (err) => console.error(err.error.message),
 
+
+    })
+  }
 
   filterInterventions() {
     const term = this.searchTerm.toLowerCase();
@@ -141,6 +153,14 @@ export class InterventionComponent implements OnInit {
       error: (err) => console.error(err)
     });
   }
+getInterventionsByApprovedBy(id:number){
+    this.interventionService.getInterventionsByApprovedId(id).subscribe({
+      next: data => {this.interventions=data,
 
+        this.filteredInterventions=data,
+        this.updatePagination();},
+      error:err=>{err.error()}
+    })
+}
 
 }

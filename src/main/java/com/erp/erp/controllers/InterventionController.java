@@ -65,4 +65,5 @@ public class InterventionController {
     public ResponseEntity<List<InterventionDTO>> getInterventionByPieceId(@PathVariable String id){
         return ResponseEntity.ok(interventionService.getInterventionByPieceId(id));
     }
+
 }

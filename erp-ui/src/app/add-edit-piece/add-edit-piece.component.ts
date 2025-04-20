@@ -26,7 +26,7 @@ import {InterventionService} from "../services/intervention-service.service";
 })
 export class AddEditPieceComponent implements OnInit {
   piece!: Piece;
-  pieceId!: any;
+  pieceId!:string | null;
   pieces: Piece[] = [];
   filteredPieces: Piece[] = [];
   isEditing: boolean = false;
@@ -44,14 +44,12 @@ export class AddEditPieceComponent implements OnInit {
   expiryDate!: string;   // changed from Date to string
   updatedAt: string = ''; // changed from Date to string
   createdAt!: string;     // changed from Date to string
-  equipmentId!: string;
-  categorieId!: string;
+  equipmentId!: Equipment;
+  categorieId!: Category;
   interventions!:Intervention[]
-
   equipements: Equipment[] = [];
   categories: Category[] = [];
   searchTerm: string = '';
-
   constructor(
     private route: ActivatedRoute,
     private categorieService: CategorieService,

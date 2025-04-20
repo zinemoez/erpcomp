@@ -25,8 +25,8 @@ declare var bootstrap: any;
 export class EquipmentComponent implements OnInit{
   equipment!:Equipment
   id!:any
-  pieces!:Piece[]
-  interventions!:Intervention[]
+  pieces:Piece[]=[]
+  interventions:Intervention[]=[]
   constructor(private equipmentService:EquipmentService,private interventionService:InterventionService,private pieceService:PieceService, private route:ActivatedRoute) {
 
   }

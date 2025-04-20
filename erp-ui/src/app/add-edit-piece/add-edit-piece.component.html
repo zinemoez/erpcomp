@@ -8,7 +8,7 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="id" class="form-label"><strong>Id</strong></label>
-                <input type="text" class="form-control" id="id" [(ngModel)]="id" name="id" >
+                <input type="text" class="form-control" id="id" [(ngModel)]="id" name="id" required>
               </div>
 
               <div class="mb-3">
@@ -42,14 +42,14 @@
               <div class="mb-3">
                 <label for="equipmentId" class="form-label"><strong>Équipement</strong></label>
                 <select class="form-select" id="equipmentId" [(ngModel)]="equipmentId" name="equipmentId" required>
-                  <option *ngFor="let p of equipements" [value]="p.id">{{ p.id }}</option>
+                  <option *ngFor="let p of equipements" [ngValue]="p">{{ p.id }}</option>
                 </select>
               </div>
 
               <div class="mb-3">
                 <label for="categorieId" class="form-label"><strong>Catégorie</strong></label>
                 <select class="form-select" id="categorieId" [(ngModel)]="categorieId" name="categorieId" required>
-                  <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+                  <option *ngFor="let c of categories" [ngValue]="c">{{ c.name }}</option>
                 </select>
               </div>
 

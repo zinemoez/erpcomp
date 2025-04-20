@@ -1,9 +1,58 @@
-.sous-item {
-  width: 140px;
-  font-size:12px;
-
+/* Accordion container: adds a soft card-like look */
+.accordion-item {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
 }
-.item{
-  font-size:15px;
-  font-weight: bold;
+
+/* Accordion button styling */
+.accordion-button {
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0; /* default Bootstrap override */
+}
+
+/* Accordion content (scrollable body) */
+.accordion-body {
+  max-height: 200px; /* adjust as needed */
+  overflow-y: auto;
+  padding: 1rem;
+  border-top: 1px solid #dee2e6;
+  background-color: #fafafa;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Scrollbar styling (Webkit-based browsers) */
+.accordion-body::-webkit-scrollbar {
+  width: 6px;
+}
+.accordion-body::-webkit-scrollbar-thumb {
+  background-color: rgb(199, 250, 221);
+  border-radius: 10px;
+}
+.accordion-body::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* List group items spacing and look */
+.list-group-item {
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+/* Link styling inside list group */
+.list-group-item a {
+  color: #08111e;
+  transition: color 0.3s ease;
+}
+.list-group-item a:hover {
+  color: #778aa5;
+  text-decoration: underline;
+}
+.d-flex{
+  color: #d5ecdf;
 }

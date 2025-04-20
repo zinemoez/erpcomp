@@ -57,12 +57,14 @@
                           <table class="table table-bordered table-hover" >
                             <thead class="table">
                             <tr>
+                              <th>Id</th>
                               <th>Titre</th>
                               <th>Status</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr *ngFor="let int of interventions">
+                              <td>{{int.id}}</td>
                               <td>{{ int.title }}</td>
                               <td>{{ int.status }}</td>
                             </tr>
@@ -88,23 +90,22 @@
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                         </div>
                         <div class="modal-body">
-                          <table class="table table-bordered table-hover" *ngIf="pieces.length > 0; else noData">
+                          <table class="table table-bordered table-hover" >
                             <thead class="table">
                             <tr>
                               <th>ID</th>
                               <th>Nom</th>
+                              <th>Stock</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr *ngFor="let piece of pieces">
                               <td>{{ piece.id }}</td>
                               <td>{{ piece.name }}</td>
+                              <td>{{ piece.stockQuantity }}</td>
                             </tr>
                             </tbody>
                           </table>
-                          <ng-template #noData>
-                            <p class="text-center text-muted">Aucune pièce trouvée.</p>
-                          </ng-template>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
