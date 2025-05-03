@@ -73,7 +73,7 @@ public class User {
     @ManyToMany(mappedBy = "staff")
     private List<Intervention> assignedInterventions;
 
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    private final Date createdAt = new Date();
 
     @Enumerated(EnumType.STRING)
     private UserRole role;

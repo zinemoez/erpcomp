@@ -20,6 +20,6 @@ public class EquipmentDTO {
     private String description;
     private Date dateMiseEnService;
     private String departmentId;
-    private List<PieceDTO> pieces;
-    private List<InterventionDTO> interventions;
+    private List<String> pieces;
+    private List<Long> interventions;
 }

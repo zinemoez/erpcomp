@@ -36,5 +36,7 @@ public class Equipment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department")
     private Department department;
+    @OneToMany(mappedBy = "equipment")
+    private List<ParameterType> parameterType ;
 }
 

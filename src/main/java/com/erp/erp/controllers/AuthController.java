@@ -1,10 +1,9 @@
 package com.erp.erp.controllers;
 
-import com.erp.erp.dto.UserDTO;
 import com.erp.erp.entity.LoginRequest;
 import com.erp.erp.entity.RegisterRequest;
 import com.erp.erp.dto.Response;
-import com.erp.erp.sevices.Imp.UserService;
+import com.erp.erp.sevices.serv.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

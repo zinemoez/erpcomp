@@ -2,7 +2,7 @@ package com.erp.erp.controllers;
 
 import com.erp.erp.dto.InterventionDTO;
 import com.erp.erp.dto.Response;
-import com.erp.erp.sevices.Imp.InterventionService;
+import com.erp.erp.sevices.serv.InterventionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

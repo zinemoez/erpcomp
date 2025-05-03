@@ -30,6 +30,7 @@ export const routes: Routes = [
   {path:'intervention', component:InterventionComponent},
   {path:'users', component:UsersComponent},
   {path:'production', component:ProductionComponent},
+  {path:'production/:id', component:ProductionComponent},
   {path:'profil', component:ProfilComponent},
   { path: 'department/:id', component: AffDepartmentComponent },
   {path:"detailsUser/:id",component:UsersComponent},

@@ -1,9 +1,7 @@
 package com.erp.erp.controllers;
 
 import com.erp.erp.dto.DepartmentDTO;
-import com.erp.erp.dto.Response;
-import com.erp.erp.entity.Department;
-import com.erp.erp.sevices.Imp.DepartmentService;
+import com.erp.erp.sevices.serv.DepartmentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,7 @@ public class DepartmentController {
 
     @GetMapping("/all")
     public ResponseEntity<List<DepartmentDTO>> getAllDepartment(){
-        return ResponseEntity.ok(departmentService.getAlldepartments());
+        return ResponseEntity.ok(departmentService.getAllDepartments());
     }
 
     @PostMapping("/add")

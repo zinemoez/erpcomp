@@ -3,7 +3,7 @@ package com.erp.erp.controllers;
 
 import com.erp.erp.dto.CategoryDTO;
 import com.erp.erp.dto.Response;
-import com.erp.erp.sevices.Imp.CategoryService;
+import com.erp.erp.sevices.serv.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -2,7 +2,7 @@ package com.erp.erp.controllers;
 
 import com.erp.erp.dto.PieceDTO;
 import com.erp.erp.dto.Response;
-import com.erp.erp.sevices.Imp.PieceService;
+import com.erp.erp.sevices.serv.PieceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

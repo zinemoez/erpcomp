@@ -19,6 +19,6 @@ public class DepartmentDTO {
     private String name;
     private String description;
     private Date createdAt;
-    private List<UserDTO> users;
-    private List<EquipmentDTO> equipmentsId;
+    private List<Long> users;
+    private List<String> equipmentsId;
 }

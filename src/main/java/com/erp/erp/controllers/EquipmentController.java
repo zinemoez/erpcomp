@@ -2,7 +2,7 @@ package com.erp.erp.controllers;
 
 import com.erp.erp.dto.EquipmentDTO;
 import com.erp.erp.dto.Response;
-import com.erp.erp.sevices.Imp.EquipmentService;
+import com.erp.erp.sevices.serv.EquipmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

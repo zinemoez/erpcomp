@@ -46,7 +46,7 @@ export class AddEditInterventionComponent implements OnInit{
   interventionId!: number;
   isEditing: boolean = false;
   intervention!:Intervention
-  pieces!:Piece[] ;
+  pieces:Piece[]=[] ;
   equipments!: Equipment[] ;
   users!: User[] ;
   types!:Type[]
@@ -65,9 +65,9 @@ export class AddEditInterventionComponent implements OnInit{
   approvedBy!: User
   status!: Status;
   type!: Type;
-  staffIds!: User[];
+  staffIds: User[]= [];
   description!: string;
-  pieceIds!: Piece[];
+  pieceIds: Piece[] = [];
   createdAt!: string;
   createdBy: User=this.currentUser;
   updatedAt!: string;
@@ -279,6 +279,10 @@ getEquipments(): any {
       this.pieceIds = this.pieceIds?.filter(p => p.id !== piece.id); // Supprime l'objet Piece de pieceIds
     }
   }
+
+
+
+
   formatDate(dateString: string | Date): string {
     const date = new Date(dateString);
     const year = date.getFullYear();

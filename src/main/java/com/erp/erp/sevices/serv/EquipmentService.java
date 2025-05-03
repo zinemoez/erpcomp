@@ -1,8 +1,7 @@
-package com.erp.erp.sevices.Imp;
+package com.erp.erp.sevices.serv;
 
 import com.erp.erp.dto.EquipmentDTO;
 import com.erp.erp.dto.Response;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

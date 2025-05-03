@@ -1,16 +1,13 @@
-package com.erp.erp.sevices.Imp;
+package com.erp.erp.sevices.serv;
 
-import com.erp.erp.dto.EquipmentDTO;
-import com.erp.erp.dto.Response;
 import com.erp.erp.dto.DepartmentDTO;
-import com.erp.erp.entity.Department;
 
 import java.util.List;
 
 public interface DepartmentService {
     DepartmentDTO addDepartment(DepartmentDTO departmentDTODTO);
     DepartmentDTO  updateDepartment(String id,DepartmentDTO departmentDTO);
-    List<DepartmentDTO> getAlldepartments();
+    List<DepartmentDTO> getAllDepartments();
     DepartmentDTO getDepartmentById(String id);
     void deleteDepartment(String id);
 }

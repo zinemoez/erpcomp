@@ -22,14 +22,14 @@ public class PieceDTO {
 
     private String id;
     private String name;
-    private Category category;
+    private Long category;
     private String sku;
     private BigDecimal price;
-    private Integer stockQuantity;
+    private Long stockQuantity;
     private String description;
     private Date expiryDate;
     private Date  updatedAt;
     private Date createdAt;
-    private Equipment equipmentId;
+    private String equipmentId;
 
 }

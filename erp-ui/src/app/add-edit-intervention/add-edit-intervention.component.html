@@ -45,7 +45,7 @@
 
         <div class="mb-3">
           <label for="approvedBy" class="form-label"><strong>Approuvée par</strong></label>
-          <select class="form-select" id="approvedBy" [(ngModel)]="approvedBy.name" name="approvedBy" required>
+          <select class="form-select" id="approvedBy" [(ngModel)]="approvedBy" name="approvedBy" [value]="approvedBy?.name" required>
             <option *ngFor="let u of users" [ngValue]="u">{{ u.name }} {{ u.surname }}</option>
           </select>
         </div>
@@ -127,7 +127,7 @@
         <!-- Mis à jour par -->
         <div class="mb-3">
           <label for="updatedBy" class="form-label"><strong>Mise à jour par</strong></label>
-          <input type="text" class="form-control" id="updatedBy" [(ngModel)]="updatedBy.name" name="updatedBy">
+          <input type="text" class="form-control" id="updatedBy" [value]="updatedBy" readonly>
         </div>
 
         <!-- Département -->

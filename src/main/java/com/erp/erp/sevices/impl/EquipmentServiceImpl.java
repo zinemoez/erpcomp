@@ -1,20 +1,19 @@
 package com.erp.erp.sevices.impl;
 
 import com.erp.erp.dto.EquipmentDTO;
-import com.erp.erp.dto.InterventionDTO;
-import com.erp.erp.dto.PieceDTO;
 import com.erp.erp.dto.Response;
 import com.erp.erp.entity.Equipment;
-import com.erp.erp.entity.Intervention;
 import com.erp.erp.entity.Piece;
 import com.erp.erp.exceptions.NotFoundException;
+import com.erp.erp.mappers.EquipmentMapper;
+import com.erp.erp.mappers.InterventionMapper;
+import com.erp.erp.mappers.PieceMapper;
 import com.erp.erp.repository.EquipmentRepository;
 import com.erp.erp.repository.PieceRepository;
-import com.erp.erp.sevices.Imp.EquipmentService;
+import com.erp.erp.sevices.serv.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -28,21 +27,22 @@ public class EquipmentServiceImpl implements EquipmentService {
     private final ModelMapper modelMapper;
     private final EquipmentRepository equipmentRepository;
     private final PieceRepository pieceRepository;
+    private final PieceMapper pieceMapper;
+    private final InterventionMapper interventionMapper;
+    private final EquipmentMapper equipmentMapper;
 
     @Override
     public EquipmentDTO addEquipment(EquipmentDTO equipmentDTO) {
-        Equipment equipment = modelMapper.map(equipmentDTO, Equipment.class);
+        Equipment equipment = equipmentMapper.toEntity(equipmentDTO);
 
         if (equipmentDTO.getPieces() != null) {
             List<Piece> pieces = equipmentDTO.getPieces().stream()
-                    .map(pieceDTO -> pieceRepository.findById(pieceDTO.getId())
+                    .map(pieceDTO -> pieceRepository.findById(pieceDTO)
                             .orElseThrow(() -> new NotFoundException("piece Not Found")))
                     .collect(Collectors.toList());
             equipment.setPieces(pieces);
         }
-
         equipmentRepository.save(equipment);
-        EquipmentDTO equipmentdto = modelMapper.map(equipment, EquipmentDTO.class);
         return equipmentDTO;
     }
 
@@ -55,17 +55,13 @@ public class EquipmentServiceImpl implements EquipmentService {
 
         if (equipmentDTO.getPieces() != null) {
             List<Piece> pieces = equipmentDTO.getPieces().stream()
-                    .map(pieceDTO -> pieceRepository.findById(pieceDTO.getId())
+                    .map(pieceDTO -> pieceRepository.findById(pieceDTO)
                             .orElseThrow(() -> new NotFoundException("piece Not Found")))
                     .collect(Collectors.toList());
             equipment.setPieces(pieces);
         }
-        List<PieceDTO> pieceDTOs = equipment.getPieces().stream()
-                .map(piece -> modelMapper.map(piece, PieceDTO.class))
-                .collect(Collectors.toList());
-        equipmentDTO.setPieces(pieceDTOs);
-        List<InterventionDTO> interventionDTOs = equipment.getInterventions().stream()
-                .map(intervention -> modelMapper.map(intervention, InterventionDTO.class))
+        List<Long> interventionDTOs = equipment.getInterventions().stream()
+                .map(intervention -> interventionMapper.toDTO(intervention).getId())
                 .collect(Collectors.toList());
         equipmentDTO.setInterventions(interventionDTOs);
 
@@ -82,17 +78,17 @@ public class EquipmentServiceImpl implements EquipmentService {
         List<EquipmentDTO> equipmentDTOS = equipments.stream()
                 .map(equipment -> {
                     // Convert Equipment entity to EquipmentDTO
-                    EquipmentDTO equipmentDTO = modelMapper.map(equipment, EquipmentDTO.class);
+                    EquipmentDTO equipmentDTO = equipmentMapper.toDTO(equipment);
 
                     // Map Piece entities to PieceDTOs
-                    List<PieceDTO> pieceDTOs = equipment.getPieces().stream()
-                            .map(piece -> modelMapper.map(piece, PieceDTO.class))
+                    List<String> pieceDTOs = equipment.getPieces().stream()
+                            .map(piece -> pieceMapper.toPieceDTO(piece).getId())
                             .collect(Collectors.toList());
                     equipmentDTO.setPieces(pieceDTOs);
 
                     // Map Intervention entities to InterventionDTOs
-                    List<InterventionDTO> interventionDTOs = equipment.getInterventions().stream()
-                            .map(intervention -> modelMapper.map(intervention, InterventionDTO.class))
+                    List<Long> interventionDTOs = equipment.getInterventions().stream()
+                            .map(intervention -> interventionMapper.toDTO(intervention).getId())
                             .collect(Collectors.toList());
                     equipmentDTO.setInterventions(interventionDTOs);
 
@@ -111,20 +107,20 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .orElseThrow(() -> new NotFoundException("Equipment Not Found"));
 
         // Convert the Equipment entity to EquipmentDTO
-        EquipmentDTO equipmentDTO = modelMapper.map(equipment, EquipmentDTO.class);
+        EquipmentDTO equipmentDTO = equipmentMapper.toDTO(equipment);
 
         // Map the related pieces to PieceDTOs if pieces exist
         if (equipment.getPieces() != null && !equipment.getPieces().isEmpty()) {
-            List<PieceDTO> pieceDTOs = equipment.getPieces().stream()
-                    .map(piece -> modelMapper.map(piece, PieceDTO.class))
+            List<String> pieceDTOs = equipment.getPieces().stream()
+                    .map(piece -> pieceMapper.toPieceDTO(piece).getId())
                     .collect(Collectors.toList());
             equipmentDTO.setPieces(pieceDTOs);
         }
 
         // Map the related interventions to InterventionDTOs if interventions exist
         if (equipment.getInterventions() != null && !equipment.getInterventions().isEmpty()) {
-            List<InterventionDTO> interventionDTOs = equipment.getInterventions().stream()
-                    .map(intervention -> modelMapper.map(intervention, InterventionDTO.class))
+            List<Long> interventionDTOs = equipment.getInterventions().stream()
+                    .map(intervention -> interventionMapper.toDTO(intervention).getId())
                     .collect(Collectors.toList());
             equipmentDTO.setInterventions(interventionDTOs);
         }
@@ -148,22 +144,22 @@ public class EquipmentServiceImpl implements EquipmentService {
         List<EquipmentDTO> equipmentDTOs = equipments.stream()
                 .map(equipment -> {
                     // Mapping the Equipment to EquipmentDTO
-                    EquipmentDTO equipmentDTO = modelMapper.map(equipment, EquipmentDTO.class);
+                    EquipmentDTO equipmentDTO = equipmentMapper.toDTO(equipment);
 
                     // If pieces are present, map them to PieceDTOs
                     if (equipment.getPieces() != null) {
-                        List<PieceDTO> pieceDTOs = equipment.getPieces().stream()
-                                .map(piece -> modelMapper.map(piece, PieceDTO.class))
+                        List<String> pieceDTOs = equipment.getPieces().stream()
+                                .map(piece -> pieceMapper.toPieceDTO(piece).getId())
                                 .collect(Collectors.toList());
                         equipmentDTO.setPieces(pieceDTOs); // Set pieces in the DTO
                     }
 
                     // If interventions are present, map them to InterventionDTOs
                     if (equipment.getInterventions() != null) {
-                        List<InterventionDTO> interventionDTOs = equipment.getInterventions().stream()
-                                .map(intervention -> modelMapper.map(intervention, InterventionDTO.class))
+                        List<Long> interventionDTOs = equipment.getInterventions().stream()
+                                .map(intervention -> interventionMapper.toDTO(intervention).getId())
                                 .collect(Collectors.toList());
-                        equipmentDTO.setInterventions(interventionDTOs); // Set interventions in the DTO
+                        equipmentDTO.setInterventions(interventionDTOs);// Set interventions in the DTO
                     }
 
                     return equipmentDTO;

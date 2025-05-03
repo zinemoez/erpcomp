@@ -10,7 +10,7 @@ import com.erp.erp.exceptions.NotFoundException;
 import com.erp.erp.repository.DepartmentRepository;
 import com.erp.erp.repository.UserRepository;
 import com.erp.erp.security.JwtUtils;
-import com.erp.erp.sevices.Imp.UserService;
+import com.erp.erp.sevices.serv.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService {
         return Response.builder()
                 .status(200)
                 .message("Success")
-                .user(userDTO)
+                .user(userDTO.getId())
                 .build();
     }
 

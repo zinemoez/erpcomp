@@ -5,40 +5,41 @@ import com.erp.erp.entity.Department;
 import com.erp.erp.entity.Equipment;
 import com.erp.erp.entity.User;
 import com.erp.erp.exceptions.NotFoundException;
+import com.erp.erp.mappers.DepartmentMapper;
+import com.erp.erp.mappers.EquipmentMapper;
+import com.erp.erp.mappers.UserMapper;
 import com.erp.erp.repository.DepartmentRepository;
 import com.erp.erp.repository.EquipmentRepository;
 import com.erp.erp.repository.UserRepository;
-import com.erp.erp.sevices.Imp.DepartmentService;
-import jakarta.annotation.PostConstruct;
+import com.erp.erp.sevices.serv.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DepartmentServiceImpl implements DepartmentService {
-        private final ModelMapper modelMapper;
-        private final DepartmentRepository departmentRepository ;
+
+    private final DepartmentMapper departmentMapper;
+    private  final UserMapper userMapper;
+    private final EquipmentMapper equipmentMapper;// Use custom DepartmentMapper
+    private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
     private final EquipmentRepository equipmentRepository;
 
     @Override
     public DepartmentDTO addDepartment(DepartmentDTO departmentDTO) {
-
-        // Map DTO to Entity
-        Department department = modelMapper.map(departmentDTO, Department.class);
+        // Map DTO to Entity using DepartmentMapper
+        Department department = departmentMapper.toEntity(departmentDTO);
 
         // Handle Users if provided
         if (departmentDTO.getUsers() != null) {
             List<User> users = departmentDTO.getUsers().stream()
-                    .map(userDTO -> userRepository.findById(userDTO.getId())
+                    .map(userDTO -> userRepository.findById(userDTO)
                             .orElseThrow(() -> new NotFoundException("User Not Found")))
                     .collect(Collectors.toList());
             department.setUsers(users);
@@ -47,26 +48,21 @@ public class DepartmentServiceImpl implements DepartmentService {
         // Handle Equipments if provided
         if (departmentDTO.getEquipmentsId() != null) {
             List<Equipment> equipments = departmentDTO.getEquipmentsId().stream()
-                    .map(equipmentDTO -> equipmentRepository.findById(equipmentDTO.getId())
+                    .map(equipmentDTO -> equipmentRepository.findById(equipmentDTO)
                             .orElseThrow(() -> new NotFoundException("Equipment Not Found")))
                     .collect(Collectors.toList());
             department.setEquipments(equipments);
         }
 
         // Save the new department
-        departmentRepository.save(department);
+        Department savedDepartment = departmentRepository.save(department);
 
-        // Convert to DTO for response
-        DepartmentDTO savedDepartmentDTO = modelMapper.map(department, DepartmentDTO.class);
-
-        return savedDepartmentDTO;
-
+        // Convert to DTO for response using DepartmentMapper
+        return departmentMapper.toDTO(savedDepartment);
     }
-
 
     @Override
     public DepartmentDTO updateDepartment(String id, DepartmentDTO departmentDTO) {
-
         // Fetch the existing department or throw an exception if not found
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Department Not Found"));
@@ -78,7 +74,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         // Update Users if provided
         if (departmentDTO.getUsers() != null) {
             List<User> users = departmentDTO.getUsers().stream()
-                    .map(userDTO -> userRepository.findById(userDTO.getId())
+                    .map(userDTO -> userRepository.findById(userDTO)
                             .orElseThrow(() -> new NotFoundException("User Not Found")))
                     .collect(Collectors.toList());
             department.setUsers(users);
@@ -87,46 +83,47 @@ public class DepartmentServiceImpl implements DepartmentService {
         // Update Equipments if provided
         if (departmentDTO.getEquipmentsId() != null) {
             List<Equipment> equipments = departmentDTO.getEquipmentsId().stream()
-                    .map(equipmentDTO -> equipmentRepository.findById(equipmentDTO.getId())
+                    .map(equipmentDTO -> equipmentRepository.findById(equipmentDTO)
                             .orElseThrow(() -> new NotFoundException("Equipment Not Found")))
                     .collect(Collectors.toList());
             department.setEquipments(equipments);
         }
 
         // Save the updated department
-        departmentRepository.save(department);
+        Department updatedDepartment = departmentRepository.save(department);
 
-        // Convert updated department back to DTO
-        DepartmentDTO updatedDepartmentDTO = modelMapper.map(department, DepartmentDTO.class);
-
-        return updatedDepartmentDTO;
-
+        // Convert updated department back to DTO using DepartmentMapper
+        return departmentMapper.toDTO(updatedDepartment);
     }
-    
-    @Override
-    public List<DepartmentDTO> getAlldepartments() {
 
+    @Override
+    public List<DepartmentDTO> getAllDepartments() {
         List<Department> departments = departmentRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 
         return departments.stream().map(department -> {
-                    department.getUsers().size();
-                    department.getEquipments().size();
-            DepartmentDTO departmentDTO = modelMapper.map(department, DepartmentDTO.class);
-
-                    List<UserDTO> userDTOs = department.getUsers().stream()
-                            .map(user -> modelMapper.map(user, UserDTO.class))
-                            .collect(Collectors.toList());
-                    departmentDTO.setUsers(userDTOs);
-
-                    List<EquipmentDTO> equipmentDTOs = department.getEquipments().stream()
-                            .map(equipment -> modelMapper.map(equipment, EquipmentDTO.class))
-                            .collect(Collectors.toList());
-                    departmentDTO.setEquipmentsId(equipmentDTOs);
-
+            // Initialize the collections to avoid lazy loading issues
+            department.getUsers().size();
+            department.getEquipments().size();
+            // Convert department to DTO using DepartmentMapper
+            DepartmentDTO departmentDTO = departmentMapper.toDTO(department);
+            // Map users if needed
+            if (department.getUsers() != null) {
+                // Map user IDs if users exist, assuming that userMapper returns UserDTO and has getId() method
+                List<Long> userDTOs = department.getUsers().stream()
+                        .map(user -> userMapper.toUserDTO(user).getId())  // Convert to UserDTO and get the ID
+                        .collect(Collectors.toList());
+                departmentDTO.setUsers(userDTOs);  // Set the list of user IDs
+            }
+            // Map equipments if needed
+            if (department.getEquipments() != null) {
+                // Map equipment IDs if equipments exist, assuming that equipmentMapper returns EquipmentDTO and has getId() method
+                List<String> equipmentDTOs = department.getEquipments().stream()
+                        .map(equipment -> equipmentMapper.toDTO(equipment).getId())  // Convert to EquipmentDTO and get the ID
+                        .collect(Collectors.toList());
+                departmentDTO.setEquipmentsId(equipmentDTOs);  // Set the list of equipment IDs
+            }
             return departmentDTO;
-        }
-        ).collect(Collectors.toList());
-
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -134,32 +131,34 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Department Not Found"));
 
-        DepartmentDTO departmentDTO = modelMapper.map(department, DepartmentDTO.class);
+        // Convert department to DTO using DepartmentMapper
+        DepartmentDTO departmentDTO = departmentMapper.toDTO(department);
 
-        // Mapper les utilisateurs
+        // Map users and equipments if needed
         if (department.getUsers() != null) {
-            departmentDTO.setUsers(department.getUsers().stream()
-                    .map(user -> modelMapper.map(user, UserDTO.class))
-                    .collect(Collectors.toList()));
+            List<Long> userDTOs = department.getUsers().stream()
+                    .map(user -> userMapper.toUserDTO(user).getId())  // Use DepartmentMapper to convert users
+                    .collect(Collectors.toList());
+            departmentDTO.setUsers(userDTOs);
         }
 
-        // Mapper les équipements
         if (department.getEquipments() != null) {
-            departmentDTO.setEquipmentsId(department.getEquipments().stream()
-                    .map(equipment -> modelMapper.map(equipment, EquipmentDTO.class))
-                    .collect(Collectors.toList()));
+            List<String> equipmentDTOs = department.getEquipments().stream()
+                    .map(equipment -> equipmentMapper.toDTO(equipment).getId())  // Use DepartmentMapper to convert equipments
+                    .toList();
+            departmentDTO.setEquipmentsId(equipmentDTOs);
         }
 
         return departmentDTO;
     }
 
-        @Override
-        public void deleteDepartment(String id) {
-            departmentRepository.findById(id)
-                    .orElseThrow(()-> new NotFoundException("Department Not Found"));
+    @Override
+    public void deleteDepartment(String id) {
+        departmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Department Not Found"));
 
-            departmentRepository.deleteById(id);
+        departmentRepository.deleteById(id);
 
-        }
+        log.info("Department with ID {} has been deleted", id);
     }
-
+}

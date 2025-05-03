@@ -27,7 +27,7 @@ public class Piece {
     @Positive(message = "Product price must be a positive value")
     private BigDecimal price;
     @Min(value = 0, message = "Stock quantity cannot be less than zero")
-    private Integer stockQuantity;
+    private Long stockQuantity;
     private String description;
     private String imageUrl;
     private Date expiryDate;

@@ -10,7 +10,7 @@
         <h2 class="card-title card-header text-center fw-bold">{{ department.name }}</h2>
         <p><strong>Créé le :</strong> {{ department.createdAt | date:'medium' }}</p>
         <p><strong>Description :</strong> {{ department.description }}</p>
-        <a routerLink="/production" class="btn btn-primary">Production</a>
+        <a [routerLink]="['/production', department.id]" class="btn btn-primary">Production</a>
       </div>
     </div>
   </div>

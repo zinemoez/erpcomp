@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 @Entity
 @Getter
@@ -61,8 +62,8 @@ public class Intervention {
     )
     private List<Piece> pieces;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt;
+    private Date createdAt;
+    private Date  updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by")
