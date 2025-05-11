@@ -17,6 +17,7 @@ import {AddEditEquipementComponent} from "./add-edit-equipement/add-edit-equipem
 import {AddEditDepartementComponent} from "./add-edit-departement/add-edit-departement.component";
 import {AddEditPieceComponent} from "./add-edit-piece/add-edit-piece.component";
 import {AddEditInterventionComponent} from "./add-edit-intervention/add-edit-intervention.component";
+import {ParametersComponent} from "./parameters/parameters.component";
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -30,7 +31,7 @@ export const routes: Routes = [
   {path:'intervention', component:InterventionComponent},
   {path:'users', component:UsersComponent},
   {path:'production', component:ProductionComponent},
-  {path:'production/:id', component:ProductionComponent},
+  {path:'production/:id', component:ParametersComponent},
   {path:'profil', component:ProfilComponent},
   { path: 'department/:id', component: AffDepartmentComponent },
   {path:"detailsUser/:id",component:UsersComponent},

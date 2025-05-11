@@ -33,5 +33,7 @@ public interface IDailyParameterService {
     DailyParameterDTO getById(Long id);
     List<DailyParameterDTO> findByDepartementId( String id);
     DailyParameter updateDailyParameter(Long id,DailyParameterDTO dailyParameterDTO);
+
+    List<DailyParameterDTO> findByParameterTypeId(Long id);
 }
 

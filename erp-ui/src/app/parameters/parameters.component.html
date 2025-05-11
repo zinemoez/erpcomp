@@ -1,0 +1,131 @@
+<div class="container-fluid mt-2">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+      <nav class="bg-light p-3 h-100">
+        <h6 class="mb-4">Équipements de l'unité {{ departmentId }}</h6>
+        <ul class="nav nav-pills flex-column">
+          <li class="nav-item" *ngFor="let equi of equipments">
+            <a class="nav-link" (click)="getParmetersByEquipmentId(equi.id)">
+              {{ equi.name }}
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="col-md-9">
+      <div class="d-flex justify-content-end mb-2">
+        <button class="btn btn-primary" (click)="openAddModal()" data-bs-toggle="modal" data-bs-target="#addParameterModal">
+          Ajouter Paramètre
+        </button>
+      </div>
+
+      <table class="table table-bordered">
+        <thead class="table-light">
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Position</th>
+          <th>Unité</th>
+          <th>Min</th>
+          <th>Max</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let param of parameters">
+          <tr>
+            <td>{{ param.id }}</td>
+            <td>{{ param.name }}</td>
+            <td>{{ param.paramType }}</td>
+            <td>{{ param.position }}</td>
+            <td>{{ param.unit }}</td>
+            <td>{{ param.min }}</td>
+            <td>{{ param.max }}</td>
+            <td>
+              <div>
+              <button class="btn btn-info btn-sm m-1" (click)="getDailyParameters(param.id)">
+                Paramètres Journaliers
+              </button>
+              <button class="btn btn-primary btn-sm m-1" (click)="openAddModal(); getPrameterTypeById(param.id)" data-bs-toggle="modal" data-bs-target="#addParameterModal" >
+                Modifier
+              </button>
+              <button class="btn btn-danger btn-sm m-1" (click)=" supprimererParameter(param.id) ">
+                Supprimer
+              </button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+
+        <ng-container *ngFor="let daily of dailyParameters">
+          <tr>
+            <td colspan="3">{{ daily.date }}</td>
+            <td colspan="5">{{ daily.value }}</td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Bootstrap (placée en dehors du contenu principal) -->
+<div class="modal fade" id="addParameterModal" tabindex="-1" aria-labelledby="addParameterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form (ngSubmit)="onSubmitParameter()" #parameterForm="ngForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addParameterModalLabel">Ajouter un paramètre</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nom</label>
+              <input type="number" class="form-control" [(ngModel)]="newParameter.id" name="id" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Nom</label>
+              <input type="text" class="form-control" [(ngModel)]="newParameter.name" name="name" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Position</label>
+              <select class="form-select" [(ngModel)]="newParameter.position" name="position">
+                <option *ngFor="let position of positionEnum" [value]="position">{{ position }}</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Unité</label>
+              <select class="form-select" [(ngModel)]="newParameter.unit" name="position">
+                <option *ngFor="let unit of unitEnum" [value]="unit">{{ unit }}</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">ParamaTyPE</label>
+              <select class="form-select" [(ngModel)]="newParameter.paramType" name="paramType">
+                <option *ngFor="let paramType of parmaTypeEnum" [value]=" paramType">{{  paramType }}</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Min</label>
+              <input type="number" class="form-control" [(ngModel)]="newParameter.min" name="min">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Max</label>
+              <input type="number" class="form-control" [(ngModel)]="newParameter.max" name="max">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-success" >Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

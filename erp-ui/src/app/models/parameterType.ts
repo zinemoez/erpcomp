@@ -13,6 +13,6 @@ export class ParameterType {
   min!:number
   max!:number
   dailyParameters!:DailyParameter[]
-  equipment!:Equipment
+  equipmentId!:string
   position!:Position
 }

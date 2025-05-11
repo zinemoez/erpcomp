@@ -6,6 +6,7 @@ import com.erp.erp.enums.Etat;
 import com.erp.erp.exceptions.NotFoundException;
 import com.erp.erp.mappers.InterventionMapper;
 import com.erp.erp.mappers.UserMapper;
+import com.erp.erp.repository.EquipmentRepository;
 import com.erp.erp.repository.InterventionRepository;
 import com.erp.erp.repository.PieceRepository;
 import com.erp.erp.repository.UserRepository;
@@ -27,6 +28,7 @@ public class InterventionServiceImpl implements InterventionService {
     private final InterventionRepository interventionRepository;
     private final PieceRepository pieceRepository;
     private final UserRepository userRepository;
+    private final EquipmentRepository equipmentRepository;
     private final UserService userService;
     private final InterventionMapper interventionMapper;
     private final UserMapper userMapper;
@@ -39,21 +41,99 @@ public class InterventionServiceImpl implements InterventionService {
     }
 
     @Override
-    public InterventionDTO updateIntervention(int id, InterventionDTO interventionDTO) {
-        // Fetch the existing intervention or throw an exception
+    public InterventionDTO updateIntervention(int id, InterventionDTO dto) {
         Intervention intervention = interventionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Intervention not found with id"));
+                .orElseThrow(() -> new RuntimeException("Intervention not found with id: " + id));
 
-        // Set the status based on the current logged-in user
-        if (Objects.equals(userService.getCurrentLoggedInUser().getId(), interventionDTO.getApprovedBy())) {
-            intervention.setStatus(interventionDTO.getStatus());
+        // Titre
+        if (dto.getTitle() != null) {
+            intervention.setTitle(dto.getTitle());
         }
 
-        // Save the updated intervention
-        interventionRepository.save(intervention);
+        // Équipement
+        if (dto.getEquipmentId() != null) {
+            Equipment equipment = equipmentRepository.findById(dto.getEquipmentId().getId())
+                    .orElseThrow(() -> new RuntimeException("Equipment not found with id: " + dto.getEquipmentId().getId()));
+            intervention.setEquipment(equipment);
+        }
 
-        return interventionDTO;
+        // Approuvé par
+        if (dto.getApprovedBy() != null) {
+            User approved = userRepository.findById(dto.getApprovedBy().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found (approvedBy)"));
+            intervention.setApprovedBy(approved);
+        }
+
+        // Créé par
+        if (dto.getCreatedBy() != null) {
+            User creator = userRepository.findById(dto.getCreatedBy().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found (createdBy)"));
+            intervention.setCreatedBy(creator);
+        }
+
+        // Staff
+        if (dto.getStaffIds() != null && !dto.getStaffIds().isEmpty()) {
+            List<User> staff = dto.getStaffIds().stream()
+                    .map(u -> userRepository.findById(u.getId())
+                            .orElseThrow(() -> new RuntimeException("User not found: " + u.getId())))
+                    .collect(Collectors.toList());
+            intervention.setStaff(staff);
+        }
+
+        // Pièces
+        if (dto.getPieces() != null && !dto.getPieces().isEmpty()) {
+            List<Piece> pieces = dto.getPieces().stream()
+                    .map(p -> pieceRepository.findById(p.getId())
+                            .orElseThrow(() -> new RuntimeException("Piece not found: " + p.getId())))
+                    .collect(Collectors.toList());
+            intervention.setPieces(pieces);
+        }
+
+        // Statut (vérification autorisation possible)
+        if (dto.getStatus() != null) {
+            Long currentUserId = userService.getCurrentLoggedInUser().getId();
+            if (dto.getApprovedBy() != null && currentUserId.equals(dto.getApprovedBy().getId())) {
+                intervention.setStatus(dto.getStatus());
+            } else {
+                throw new SecurityException("Seul l'utilisateur approuvant peut changer le statut.");
+            }
+        }
+
+        // Type
+        if (dto.getType() != null) {
+            intervention.setType(dto.getType());
+        }
+
+        // Description
+        if (dto.getDescription() != null) {
+            intervention.setDescription(dto.getDescription());
+        }
+
+        // Dates
+        if (dto.getCreatedAt() != null) {
+            intervention.setCreatedAt(dto.getCreatedAt());
+        }
+        if (dto.getUpdatedAt() != null) {
+            intervention.setUpdatedAt(dto.getUpdatedAt());
+        }
+
+        // Mis à jour par
+        if (dto.getUpdatedBy() != null) {
+            User updated = userRepository.findById(dto.getUpdatedBy().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found (updatedBy)"));
+            intervention.setUpdatedBy(updated);
+        }
+
+        // Priorité
+        if (dto.getPriority() != null) {
+            intervention.setPriority(dto.getPriority());
+        }
+
+        // Sauvegarde et retour DTO
+        Intervention updated = interventionRepository.save(intervention);
+        return interventionMapper.toDTO(updated);
     }
+
 
     @Override
     public List<InterventionDTO> getAllInterventions() {

@@ -16,7 +16,7 @@ export class Intervention{
   type!: Type;
   staffIds!: User[];
   description!: string;
-  pieceIds!: Piece[];
+  pieces!: Piece[];
   createdAt!: Date;
   createdBy!: User;
   updatedAt!: Date;

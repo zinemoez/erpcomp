@@ -9,7 +9,6 @@ import com.erp.erp.repository.EquipmentRepository;
 import com.erp.erp.repository.PieceRepository;
 import com.erp.erp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +21,9 @@ public class InterventionMapper {
     private final EquipmentRepository equipmentRepository;
     private final UserRepository userRepository;
     private final PieceRepository pieceRepository;
+    private final UserMapper userMapper;
+    private final PieceMapper pieceMapper;
+    private final EquipmentMapper equipmentMapper;
 
     // Convert Entity to DTO
     public InterventionDTO toDTO(Intervention intervention) {
@@ -30,25 +32,25 @@ public class InterventionMapper {
         }
 
         InterventionDTO dto = new InterventionDTO();
-        dto.setId((long) intervention.getId());
+        dto.setId(intervention.getId());
         dto.setTitle(intervention.getTitle());
 
         if (intervention.getEquipment() != null) {
-            dto.setEquipmentId(intervention.getEquipment().getId());
+            dto.setEquipmentId(equipmentMapper.toDTO(intervention.getEquipment()));
         }
 
         if (intervention.getCreatedBy() != null) {
-            dto.setCreatedBy(intervention.getCreatedBy().getId());
+            dto.setCreatedBy(userMapper.toUserDTO(intervention.getCreatedBy()));
         }
 
         if (intervention.getApprovedBy() != null) {
-            dto.setApprovedBy(intervention.getApprovedBy().getId());
+            dto.setApprovedBy(userMapper.toUserDTO(intervention.getApprovedBy()));
         }
 
         if (intervention.getStaff() != null) {
             dto.setStaffIds(
                     intervention.getStaff().stream()
-                            .map(User::getId)
+                            .map(userMapper::toUserDTO)
                             .collect(Collectors.toList())
             );
         }
@@ -56,7 +58,7 @@ public class InterventionMapper {
         if (intervention.getPieces() != null) {
             dto.setPieces(
                     intervention.getPieces().stream()
-                            .map(Piece::getId)
+                            .map(pieceMapper::toPieceDTO)
                             .collect(Collectors.toList())
             );
         }
@@ -68,7 +70,7 @@ public class InterventionMapper {
         dto.setUpdatedAt(intervention.getUpdatedAt());
 
         if (intervention.getUpdatedBy() != null) {
-            dto.setUpdatedBy(intervention.getUpdatedBy().getId());
+            dto.setUpdatedBy(userMapper.toUserDTO(intervention.getUpdatedBy()));
         }
 
         dto.setPriority(intervention.getPriority());
@@ -83,34 +85,40 @@ public class InterventionMapper {
         }
 
         Intervention intervention = new Intervention();
-        intervention.setId(dto.getId() != null ? dto.getId().intValue() : 0);
+        intervention.setId(dto.getId());
         intervention.setTitle(dto.getTitle());
 
         if (dto.getEquipmentId() != null) {
-            Equipment equipment = equipmentRepository.findById(dto.getEquipmentId())
-                    .orElseThrow(() -> new IllegalArgumentException("Equipment not found with id: " + dto.getEquipmentId()));
+            Equipment equipment = equipmentRepository.findById(dto.getEquipmentId().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Equipment not found with id: " + dto.getEquipmentId().getId()));
             intervention.setEquipment(equipment);
         }
 
         if (dto.getCreatedBy() != null) {
-            User createdBy = userRepository.findById(dto.getCreatedBy())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found with id (createdBy): " + dto.getCreatedBy()));
+            User createdBy = userRepository.findById(dto.getCreatedBy().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with id (createdBy): " + dto.getCreatedBy().getId()));
             intervention.setCreatedBy(createdBy);
         }
 
         if (dto.getApprovedBy() != null) {
-            User approvedBy = userRepository.findById(dto.getApprovedBy())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found with id (approvedBy): " + dto.getApprovedBy()));
+            User approvedBy = userRepository.findById(dto.getApprovedBy().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with id (approvedBy): " + dto.getApprovedBy().getId()));
             intervention.setApprovedBy(approvedBy);
         }
 
         if (dto.getStaffIds() != null && !dto.getStaffIds().isEmpty()) {
-            List<User> staff = userRepository.findAllById(dto.getStaffIds());
+            List<User> staff = dto.getStaffIds().stream()
+                    .map(userDTO -> userRepository.findById(userDTO.getId())
+                            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userDTO.getId())))
+                    .collect(Collectors.toList());
             intervention.setStaff(staff);
         }
 
         if (dto.getPieces() != null && !dto.getPieces().isEmpty()) {
-            List<Piece> pieces = pieceRepository.findAllById(dto.getPieces());
+            List<Piece> pieces = dto.getPieces().stream()
+                    .map(pieceDTO -> pieceRepository.findById(pieceDTO.getId())
+                            .orElseThrow(() -> new RuntimeException("Piece not found with ID: " + pieceDTO.getId())))
+                    .collect(Collectors.toList());
             intervention.setPieces(pieces);
         }
 
@@ -121,8 +129,8 @@ public class InterventionMapper {
         intervention.setUpdatedAt(dto.getUpdatedAt());
 
         if (dto.getUpdatedBy() != null) {
-            User updatedBy = userRepository.findById(dto.getUpdatedBy())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found with id (updatedBy): " + dto.getUpdatedBy()));
+            User updatedBy = userRepository.findById(dto.getUpdatedBy().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with id (updatedBy): " + dto.getUpdatedBy().getId()));
             intervention.setUpdatedBy(updatedBy);
         }
 
@@ -131,4 +139,3 @@ public class InterventionMapper {
         return intervention;
     }
 }
-

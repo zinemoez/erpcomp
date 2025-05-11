@@ -72,6 +72,4 @@ export class InterventionService {
       headers: this.apiService.getHeader(),
     });
   }
-
-
 }

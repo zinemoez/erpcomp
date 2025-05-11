@@ -25,13 +25,13 @@ import {ApiService} from "../services/api.service";
 })
 export class InterventionComponent implements OnInit {
   equipments!: Equipment[] ;
-  interventions!: Intervention[];
+  interventions: Intervention[]=[];
   intervention!: Intervention
   isEditing = false
   currentUser!:User
 
   searchTerm: string = '';
-  filteredInterventions: any[] = [];
+  filteredInterventions: Intervention[] = [];
   //// PAGINATION
   currentPage: number = 1;
   pageSize: number = 5; // nombre de pièces par page
@@ -71,20 +71,25 @@ export class InterventionComponent implements OnInit {
 
   getInterventionsByEquipmentId(id:string) {
     this.interventionService.getInterventionsByEquipmentId(id).subscribe({
-        next:data=>{this.interventions=data,
-          this.filteredInterventions=data,
+        next:data=>{this.interventions=data;
+          this.filteredInterventions=data;
           this.updatePagination()}   ,
-      error:err=>err.error()
+      error: (err) => {
+        console.error('Erreur lors de la récupération :', err.error?.message || err.message || err);
+      }
     })
 
   }
 
   getInterventions() {
     this.interventionService.getAllInterventions().subscribe({
-      next: data => {this.interventions=data,
-      this.filteredInterventions=data,
+      next: data => {this.interventions=data;
+
+      this.filteredInterventions=data;
         this.updatePagination();},
-      error:err=>{err.error()}
+      error: (err) => {
+        console.error('Erreur lors de la récupération :', err.error?.message || err.message || err);
+      }
     })
 
   }
@@ -95,7 +100,9 @@ export class InterventionComponent implements OnInit {
     this.interventionService.getInterventionById(id).subscribe({
       next: data => {this.intervention =data
         },
-      error:err=>{err.error()}
+      error: (err) => {
+        console.error('Erreur lors de la récupération :', err.error?.message || err.message || err);
+      }
     })
 
 
@@ -150,7 +157,9 @@ export class InterventionComponent implements OnInit {
   getEquipements() {
     this.equipmentService.getAllEquipment().subscribe({
       next: (res) => this.equipments = res,
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error('Erreur lors de la récupération :', err.error?.message || err.message || err);
+      }
     });
   }
 getInterventionsByApprovedBy(id:number){
@@ -159,7 +168,9 @@ getInterventionsByApprovedBy(id:number){
 
         this.filteredInterventions=data,
         this.updatePagination();},
-      error:err=>{err.error()}
+      error: (err) => {
+        console.error('Erreur lors de la récupération :', err.error?.message || err.message || err);
+      }
     })
 }
 

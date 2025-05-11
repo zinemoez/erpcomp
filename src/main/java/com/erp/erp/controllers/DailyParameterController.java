@@ -7,6 +7,7 @@ import com.erp.erp.entity.DailyParameter;
 import com.erp.erp.sevices.serv.IDailyParameterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class DailyParameterController {
     //  Récupérer par type de paramètre
     @GetMapping("/parameter-type/{parameterTypeId}")
     public List<DailyParameterDTO> getByParameterTypeId(@PathVariable Long parameterTypeId) {
-        return dailyParameterService.getByParameterTypeId(parameterTypeId);
+        return dailyParameterService.findByParameterTypeId(parameterTypeId);
     }
 
     //  Récupérer par ID d'équipement
@@ -80,4 +81,6 @@ public class DailyParameterController {
     public void delete(@PathVariable Long id) {
         dailyParameterService.delete(id);
     }
+
+
 }

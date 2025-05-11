@@ -21,5 +21,6 @@ public class EquipmentDTO {
     private Date dateMiseEnService;
     private String departmentId;
     private List<String> pieces;
-    private List<Long> interventions;
+    private List<Integer> interventions;
+    private List<Long> parameterTypes;
 }

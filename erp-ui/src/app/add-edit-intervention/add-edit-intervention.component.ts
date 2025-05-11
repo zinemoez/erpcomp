@@ -46,7 +46,7 @@ export class AddEditInterventionComponent implements OnInit{
   interventionId!: number;
   isEditing: boolean = false;
   intervention!:Intervention
-  pieces:Piece[]=[] ;
+  piecess:Piece[]=[] ;
   equipments!: Equipment[] ;
   users!: User[] ;
   types!:Type[]
@@ -66,30 +66,59 @@ export class AddEditInterventionComponent implements OnInit{
   status!: Status;
   type!: Type;
   staffIds: User[]= [];
+  pieces:Piece[]=[]
   description!: string;
-  pieceIds: Piece[] = [];
   createdAt!: string;
   createdBy: User=this.currentUser;
   updatedAt!: string;
   updatedBy!: User
   priority!: Priority;
+  dataReady = false;
 
   ngOnInit(): void {
     this.interventionId = Number(this.route.snapshot.paramMap.get('id'));
-     this.pieces=this.getPieces();
-    this.priorities = this.getPriority();
-    this.types = this.getType();
-    this.statuss = this.getEtat();
-   this.users=this.getUsers();
-    console.log(this.users)
-    this.getEquipments()
-    this.getCurrentUser()
-    if (this.interventionId) {
-      this.isEditing = true;
-      this.getInterventionById(this.interventionId);
-    }
+
+    // Chargements parallèles
+    Promise.all([
+      this.loadEquipments(),
+      this.loadUsers(),
+      this.getPieces(),
+      this.getCurrentUser(),
+     this.statuss=this.getEtat(),
+      this.types=this.getType(),
+    this.priorities=this.getPriority(),
+    ]).then(() => {
+      this.dataReady = true;
+
+      if (this.interventionId) {
+        this.isEditing = true;
+        this.getInterventionById(this.interventionId);
+      }
+    });
+  }
+  loadEquipments(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.equipmentService.getAllEquipment().subscribe({
+        next: (res) => {
+          this.equipments = res;
+          resolve();
+        },
+        error: (err) => reject(err)
+      });
+    });
   }
 
+  loadUsers(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.userService.getAllUsers().subscribe({
+        next: (res) => {
+          this.users = res;
+          resolve();
+        },
+        error: (err) => reject(err)
+      });
+    });
+  }
   getPriority(): Priority[] {
     return Object.values(Priority);
   }
@@ -134,30 +163,30 @@ getEquipments(): any {
 
   getPieces(): any{
     this.pieceService.getPieces().subscribe({
-      next: (res) => (this.pieces = res),
+      next: (res) => (this.piecess = res),
       error: (err) => console.error(err.error.message),
     });
   }
-  getInterventionById(interventionId: number): any {
+  getInterventionById(interventionId: number): void {
     this.interventionService.getInterventionById(interventionId).subscribe({
       next: (res) => {
-        console.log("interventionByIdcurrent:", res);
         this.id = res.id;
-        this.title = res.title ;
+        this.title = res.title;
         this.priority = res.priority;
         this.status = res.status;
         this.type = res.type;
-        this.createdAt= this.formatDate(res.createdAt);
-        this.createdBy = res.createdBy;
-        this.approvedBy= res.approvedBy;
+        this.createdAt = this.formatDate(res.createdAt);
+        this.updatedAt = this.formatDate(res.updatedAt);
         this.description = res.description;
-        this.staffIds= res.staffIds;
-        this.pieceIds = res.pieceIds;
-        this.equipmentId=res.equipmentId
-        this.updatedAt=this.formatDate(res.updatedAt)
-        this.updatedBy=res.updatedBy
+        this.staffIds = res.staffIds;
+        this.pieces = res.pieces;
+
+        // 🛠️ Voici la clé : on trouve l'objet exact dans la liste
+        this.equipmentId = this.equipments.find(e => e.id === res.equipmentId.id)!;
+        this.approvedBy = this.users.find(u => u.id === res.approvedBy.id)!;
+        this.updatedBy = this.users.find(u => u.id === res.updatedBy.id)!;
       },
-      error: (err) => console.error(err),
+      error: (err) => console.error(err)
     });
   }
 
@@ -176,7 +205,7 @@ getEquipments(): any {
     res.approvedBy = this.approvedBy;
     res.description = this.description;
     res.staffIds = this.staffIds;
-    res.pieceIds = this.pieceIds;
+    res.pieces = this.pieces;
     res.equipmentId = this.equipmentId;
     res.updatedBy = this.updatedBy;
 
@@ -265,18 +294,18 @@ getEquipments(): any {
 
 
   isPieceSelected(piece: Piece): boolean {
-    return this.pieceIds?.some(p => p.id === piece.id) ?? false;
+    return this.pieces?.some(p => p.id === piece.id) ?? false;
   }
   onPieceCheckboxChange(event: Event, piece: Piece): void {
     const checkbox = event.target as HTMLInputElement;
 
     if (checkbox.checked) {
-      const alreadyExists = this.pieceIds?.some(p => p.id === piece.id);
+      const alreadyExists = this.pieces?.some(p => p.id === piece.id);
       if (!alreadyExists) {
-        this.pieceIds?.push(piece); // Ajoute l'objet Piece à pieceIds
+        this.pieces?.push(piece); // Ajoute l'objet Piece à pieceIds
       }
     } else {
-      this.pieceIds = this.pieceIds?.filter(p => p.id !== piece.id); // Supprime l'objet Piece de pieceIds
+      this.pieces = this.pieces?.filter(p => p.id !== piece.id); // Supprime l'objet Piece de pieceIds
     }
   }
 

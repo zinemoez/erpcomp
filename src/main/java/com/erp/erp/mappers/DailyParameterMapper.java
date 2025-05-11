@@ -23,6 +23,7 @@ public class DailyParameterMapper {
         return DailyParameterDTO.builder()
                 .id(dailyParameter.getId())
                 .value(dailyParameter.getValue())
+                .date(dailyParameter.getDate())
                 .parameterType(dailyParameter.getParameterType() != null ? dailyParameter.getParameterType().getId() : null)
                 .build();
     }
@@ -34,7 +35,6 @@ public class DailyParameterMapper {
         }
 
         DailyParameter dailyParameter = new DailyParameter();
-        dailyParameter.setDate(dto.getDate());
         dailyParameter.setValue(dto.getValue());
 
         if (dto.getParameterType() != null) {

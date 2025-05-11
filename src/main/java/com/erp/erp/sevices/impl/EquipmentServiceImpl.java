@@ -7,6 +7,7 @@ import com.erp.erp.entity.Piece;
 import com.erp.erp.exceptions.NotFoundException;
 import com.erp.erp.mappers.EquipmentMapper;
 import com.erp.erp.mappers.InterventionMapper;
+import com.erp.erp.mappers.ParameterTypeMapper;
 import com.erp.erp.mappers.PieceMapper;
 import com.erp.erp.repository.EquipmentRepository;
 import com.erp.erp.repository.PieceRepository;
@@ -30,6 +31,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     private final PieceMapper pieceMapper;
     private final InterventionMapper interventionMapper;
     private final EquipmentMapper equipmentMapper;
+    private final ParameterTypeMapper parameterTypeMapper;
 
     @Override
     public EquipmentDTO addEquipment(EquipmentDTO equipmentDTO) {
@@ -60,10 +62,15 @@ public class EquipmentServiceImpl implements EquipmentService {
                     .collect(Collectors.toList());
             equipment.setPieces(pieces);
         }
-        List<Long> interventionDTOs = equipment.getInterventions().stream()
+        List<Integer> interventionDTOs = equipment.getInterventions().stream()
                 .map(intervention -> interventionMapper.toDTO(intervention).getId())
                 .collect(Collectors.toList());
         equipmentDTO.setInterventions(interventionDTOs);
+
+        List<Long> parameterTypeDTOs = equipment.getParameterType().stream()
+                .map(parameterType -> parameterTypeMapper.toDTO(parameterType).getId())
+                .collect(Collectors.toList());
+        equipmentDTO.setParameterTypes(parameterTypeDTOs);
 
         equipmentRepository.save(equipment);
         return equipmentDTO;
@@ -87,7 +94,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                     equipmentDTO.setPieces(pieceDTOs);
 
                     // Map Intervention entities to InterventionDTOs
-                    List<Long> interventionDTOs = equipment.getInterventions().stream()
+                    List<Integer> interventionDTOs = equipment.getInterventions().stream()
                             .map(intervention -> interventionMapper.toDTO(intervention).getId())
                             .collect(Collectors.toList());
                     equipmentDTO.setInterventions(interventionDTOs);
@@ -119,11 +126,16 @@ public class EquipmentServiceImpl implements EquipmentService {
 
         // Map the related interventions to InterventionDTOs if interventions exist
         if (equipment.getInterventions() != null && !equipment.getInterventions().isEmpty()) {
-            List<Long> interventionDTOs = equipment.getInterventions().stream()
+            List<Integer> interventionDTOs = equipment.getInterventions().stream()
                     .map(intervention -> interventionMapper.toDTO(intervention).getId())
                     .collect(Collectors.toList());
             equipmentDTO.setInterventions(interventionDTOs);
         }
+        if (equipment.getParameterType() != null && !equipment.getParameterType().isEmpty()) {
+        List<Long> parameterTypeDTOs = equipment.getParameterType().stream()
+                .map(parameterType -> parameterTypeMapper.toDTO(parameterType).getId())
+                .collect(Collectors.toList());
+        equipmentDTO.setParameterTypes(parameterTypeDTOs);}
 
         // Build and return the Response with the mapped EquipmentDTO
         return equipmentDTO;
@@ -156,11 +168,16 @@ public class EquipmentServiceImpl implements EquipmentService {
 
                     // If interventions are present, map them to InterventionDTOs
                     if (equipment.getInterventions() != null) {
-                        List<Long> interventionDTOs = equipment.getInterventions().stream()
+                        List<Integer> interventionDTOs = equipment.getInterventions().stream()
                                 .map(intervention -> interventionMapper.toDTO(intervention).getId())
                                 .collect(Collectors.toList());
                         equipmentDTO.setInterventions(interventionDTOs);// Set interventions in the DTO
                     }
+                    if (equipment.getParameterType() != null ) {
+                        List<Long> parameterTypeDTOs = equipment.getParameterType().stream()
+                                .map(parameterType -> parameterTypeMapper.toDTO(parameterType).getId())
+                                .collect(Collectors.toList());
+                        equipmentDTO.setParameterTypes(parameterTypeDTOs);}
 
                     return equipmentDTO;
                 })

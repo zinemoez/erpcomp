@@ -3,9 +3,9 @@
 
   <form (ngSubmit)="handleSubmit($event)">
     <div class="row">
+
       <!-- Colonne gauche -->
       <div class="col-md-6">
-
         <!-- ID -->
         <div class="mb-3">
           <label for="id" class="form-label"><strong>ID</strong></label>
@@ -42,41 +42,38 @@
           </select>
         </div>
 
-
+        <!-- Approuvée par -->
         <div class="mb-3">
           <label for="approvedBy" class="form-label"><strong>Approuvée par</strong></label>
-          <select class="form-select" id="approvedBy" [(ngModel)]="approvedBy" name="approvedBy" [value]="approvedBy?.name" required>
-            <option *ngFor="let u of users" [ngValue]="u">{{ u.name }} {{ u.surname }}</option>
+          <select class="form-select" id="approvedBy" [(ngModel)]="approvedBy" name="approvedBy" required>
+            <option *ngFor="let u of users" [ngValue]="u">
+              {{ u.name }} {{ u.surname }}
+            </option>
           </select>
         </div>
 
+        <!-- Description -->
         <div class="mb-3">
           <label for="description" class="form-label"><strong>Description</strong></label>
           <textarea class="form-control" id="description" [(ngModel)]="description" name="description" rows="4" required></textarea>
         </div>
-
-
       </div>
 
       <!-- Colonne droite -->
       <div class="col-md-6">
 
-        <!-- Description -->
-
-        <!-- Personnel -->
-
+        <!-- Pièces affectées -->
         <div class="mb-3">
           <label class="form-label"><strong>Pièces Affectées</strong></label>
           <div class="checkbox-list-container">
-            <div *ngFor="let piece of pieces">
-              <div class="form-check checkbox-list-container">
+            <div *ngFor="let piece of piecess">
+              <div class="form-check">
                 <input
                   class="form-check-input"
                   type="checkbox"
                   [id]="'piece-' + piece.id"
                   [checked]="isPieceSelected(piece)"
                   (change)="onPieceCheckboxChange($event, piece)">
-
                 <label class="form-check-label" [for]="'piece-' + piece.id">
                   {{ piece.name }} ({{ piece.description }})
                 </label>
@@ -84,33 +81,26 @@
             </div>
           </div>
         </div>
-        <label>
-          <div>
-          <h6 *ngFor="let piece of pieceIds">{{piece.id}}, </h6>
-          </div>
-        </label>
 
-        <!-- Pièces -->
+        <!-- Staff Affecté -->
         <div class="mb-3">
           <label class="form-label"><strong>Staff Affecté</strong></label>
           <div class="checkbox-list-container">
-          <div *ngFor="let user of users">
-            <div class="form-check checkbox-list-container">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                [id]="'user-' + user.id"
-                [checked]="isUserSelected(user)"
-                (change)="onUserCheckboxChange($event, user)">
-              <label class="form-check-label" [for]="'user-' + user.id">
-                {{ user.name }} {{ user.surname }} {{user.poste}}
-              </label>
+            <div *ngFor="let user of users">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [id]="'user-' + user.id"
+                  [checked]="isUserSelected(user)"
+                  (change)="onUserCheckboxChange($event, user)">
+                <label class="form-check-label" [for]="'user-' + user.id">
+                  {{ user.name }} {{ user.surname }} ({{ user.poste }})
+                </label>
+              </div>
             </div>
           </div>
         </div>
-        </div>
-
-
 
         <!-- Date création -->
         <div class="mb-3">
@@ -126,18 +116,21 @@
 
         <!-- Mis à jour par -->
         <div class="mb-3">
-          <label for="updatedBy" class="form-label"><strong>Mise à jour par</strong></label>
-          <input type="text" class="form-control" id="updatedBy" [value]="updatedBy" readonly>
-        </div>
+          <label for="updatedAt" class="form-label"><strong>Mise à jour par</strong></label>
+        <input type="text"
+               class="form-control"
+               id="updatedBy"
+               [value]="updatedBy?.name + ' ' + updatedBy?.surname"
+               readonly>
+          </div>
 
-        <!-- Département -->
-        <div class="mb-3 ">
-          <label for="equipmentId" class="form-label "><strong>Equipement</strong></label>
-          <select class="form-select equipment" id="equipmentId" [(ngModel)]="equipmentId" name="equipmentId" required>
+        <!-- Équipement -->
+        <div class="mb-3">
+          <label for="equipmentId" class="form-label"><strong>Équipement</strong></label>
+          <select class="form-select" id="equipmentId" [(ngModel)]="equipmentId" name="equipmentId" required>
             <option *ngFor="let d of equipments" [ngValue]="d">{{ d.name }}</option>
           </select>
         </div>
-
 
       </div>
     </div>

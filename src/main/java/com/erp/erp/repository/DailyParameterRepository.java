@@ -10,7 +10,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface DailyParameterRepository extends JpaRepository<DailyParameter, Long> {
-    List<DailyParameter> findByParameterTypeId(Long parameterTypeId);
+    @Query("SELECT p FROM DailyParameter p JOIN FETCH p.parameterType WHERE p.parameterType.id = :id")
+    List<DailyParameter> findByParameterTypeId(@Param("id") Long id);
     @Query("SELECT p FROM DailyParameter p WHERE p.parameterType.equipment.id = :equipmentId")
     List<DailyParameter> findByEquipmentId(@Param("equipmentId") String equipmentId);
     List<DailyParameter> findByDate(Date date);

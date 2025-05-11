@@ -4,8 +4,7 @@ import {NgForOf} from "@angular/common";
 import {Department} from "../models/department-model";
 import {ApiService} from "../services/api.service";
 import {DepartmentService} from "../services/department-service.service";
-import {UserService} from "../services/user-service.service";
-import {User} from "../models/user-model";
+
 
 @Component({
   selector: 'app-department',

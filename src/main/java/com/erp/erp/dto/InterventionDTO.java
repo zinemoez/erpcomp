@@ -23,18 +23,18 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InterventionDTO {
-    private Long id;
+    private int id;
     private String title;
-    private String equipmentId;
-    private Long  approvedBy;
-    private Long  createdBy;
+    private EquipmentDTO equipmentId;
+    private UserDTO  approvedBy;
+    private UserDTO  createdBy;
     private Etat status;
     private Type type;
-    private List<Long> staffIds;
+    private List<UserDTO> staffIds;
     private String description;
-    private List<String> pieces;
+    private List<PieceDTO> pieces;
     private Date createdAt;
     private Date updatedAt;
-    private Long updatedBy;
+    private UserDTO updatedBy;
     private Priority priority;
 }

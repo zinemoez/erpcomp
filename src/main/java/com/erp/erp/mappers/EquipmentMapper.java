@@ -1,10 +1,7 @@
 package com.erp.erp.mappers;
 
 import com.erp.erp.dto.EquipmentDTO;
-import com.erp.erp.entity.Department;
-import com.erp.erp.entity.Equipment;
-import com.erp.erp.entity.Intervention;
-import com.erp.erp.entity.Piece;
+import com.erp.erp.entity.*;
 import com.erp.erp.repository.DepartmentRepository;
 import com.erp.erp.repository.PieceRepository;
 import com.erp.erp.repository.InterventionRepository;
@@ -46,11 +43,17 @@ public class EquipmentMapper {
             dto.setPieces(pieceIds);
         }
         if (equipment.getInterventions() != null) {
-            List<Long> interventionIds = equipment.getInterventions().stream()
+            List<Integer> interventionIds = equipment.getInterventions().stream()
                     .map(Intervention::getId)
-                    .map(Long::valueOf)
                     .collect(Collectors.toList());
             dto.setInterventions(interventionIds);
+        }
+
+        if (equipment.getParameterType() != null) {
+            List<Long> parameterTypeIds = equipment.getParameterType().stream()
+                    .map(ParameterType::getId)
+                    .collect(Collectors.toList());
+            dto.setParameterTypes(parameterTypeIds );
         }
 
         return dto;

@@ -172,5 +172,19 @@ public class DailyParameterService implements IDailyParameterService {
         // Save and return the updated entity
         return dailyParameterRepository.save(existing);
     }
+    @Override
+    public List<DailyParameterDTO> findByParameterTypeId(Long id) {
+        try {
+            List<DailyParameter> dailyParameters = dailyParameterRepository.findByParameterTypeId(id);
+
+            return dailyParameters.stream()
+                    .map(dailyParameterMapper::toDTO)
+                    .collect(Collectors.toList());
+
+        }  catch (Exception e) {
+        e.printStackTrace(); // Full error stack trace
+        return new ArrayList<>();
+    }
+    }
 
 }
