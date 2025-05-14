@@ -7,6 +7,7 @@ import com.erp.erp.mappers.DailyParameterMapper;
 import com.erp.erp.repository.DailyParameterRepository;
 import com.erp.erp.repository.ParameterTypeRepository;
 import com.erp.erp.sevices.serv.IDailyParameterService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -109,11 +110,17 @@ public class DailyParameterService implements IDailyParameterService {
 
     @Override
     public DailyParameterDTO save(DailyParameterDTO dailyParameterDTO) {
-        DailyParameter dailyParameter = dailyParameterMapper.toEntity(dailyParameterDTO);
+        DailyParameter dailyParameter = new DailyParameter();
+        dailyParameter.setValue(dailyParameterDTO.getValue());
+        dailyParameter.setDate(new Date());
+        ParameterType parameterType = parameterTypeRepository
+                .findById(dailyParameterDTO.getParameterType().getId())
+                .orElseThrow(() -> new EntityNotFoundException("ParameterType not found"));
+        dailyParameter.setParameterType(parameterType);
+        dailyParameter.setObservation(dailyParameterDTO.getObservation());
         dailyParameterRepository.save(dailyParameter);
-        return dailyParameterDTO ;
+        return dailyParameterDTO;
     }
-
 
     @Override
     public void delete(Long id) {
@@ -127,9 +134,7 @@ public class DailyParameterService implements IDailyParameterService {
         try {
             DailyParameter dailyParameter = dailyParameterRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("DailyParameter not found with id: " + id));
-
             return dailyParameterMapper.toDTO(dailyParameter);
-
         } catch (Exception e) {
             System.err.println("Erreur lors de la récupération du DailyParameter avec id " + id + " : " + e.getMessage());
             return null;
@@ -140,11 +145,9 @@ public class DailyParameterService implements IDailyParameterService {
     public List<DailyParameterDTO> findByDepartementId(String id) {
         try {
             List<DailyParameter> dailyParameters = dailyParameterRepository.findByDepartementId(id);
-
             return dailyParameters.stream()
                     .map(dailyParameterMapper::toDTO)
                     .collect(Collectors.toList());
-
         } catch (Exception e) {
             System.err.println("Erreur lors de la récupération des DailyParameters pour le département " + id + " : " + e.getMessage());
             return new ArrayList<>();
@@ -156,31 +159,23 @@ public class DailyParameterService implements IDailyParameterService {
         // Retrieve the existing DailyParameter
         DailyParameter existing = dailyParameterRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("DailyParameter not found with ID: " + id));
-
-        // Map the DTO fields to the existing entity (avoiding manual set operations)
         existing.setValue(dailyParameterDTO.getValue());
         existing.setDate(dailyParameterDTO.getDate());
-
-        // Set ParameterType if applicable (make sure this field is properly handled in DTO)
+        existing.setObservation(dailyParameterDTO.getObservation());
         if (dailyParameterDTO.getParameterType() != null) {
-            // Assuming a method exists in your mapper to fetch ParameterType based on DTO (if needed)
-            ParameterType parameterType = parameterTypeRepository.findById(dailyParameterDTO.getParameterType())
+            ParameterType parameterType = parameterTypeRepository.findById(dailyParameterDTO.getParameterType().getId())
                     .orElseThrow(() -> new NotFoundException("ParameterType not found for ID: " + dailyParameterDTO.getParameterType()));
             existing.setParameterType(parameterType);
         }
-
-        // Save and return the updated entity
         return dailyParameterRepository.save(existing);
     }
     @Override
     public List<DailyParameterDTO> findByParameterTypeId(Long id) {
         try {
             List<DailyParameter> dailyParameters = dailyParameterRepository.findByParameterTypeId(id);
-
             return dailyParameters.stream()
                     .map(dailyParameterMapper::toDTO)
                     .collect(Collectors.toList());
-
         }  catch (Exception e) {
         e.printStackTrace(); // Full error stack trace
         return new ArrayList<>();

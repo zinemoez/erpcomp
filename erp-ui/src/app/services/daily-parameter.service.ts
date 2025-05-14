@@ -9,7 +9,7 @@ import {ApiService} from "./api.service";
   providedIn: 'root'
 })
 export class DailyParameterService {
-  private apiUrl = 'http://localhost:5050/api/dailyParameters'; // à adapter
+  private apiUrl = 'http://localhost:5050/api/daily-parameters'; // à adapter
 
   constructor(private http: HttpClient,private apiService:ApiService) {}
 
@@ -47,7 +47,9 @@ export class DailyParameterService {
   }
 
   create(data: DailyParameter): Observable<DailyParameter> {
-    return this.http.post<DailyParameter>(`${this.apiUrl}`, data);
+    return this.http.post<DailyParameter>(`${this.apiUrl}/add`, data,{
+      headers: this.apiService.getHeader(),
+    });
   }
 
   update(id: number, data: DailyParameter): Observable<DailyParameter> {

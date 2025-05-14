@@ -20,4 +20,5 @@ public class DailyParameter {
     @ManyToOne
     @JoinColumn(name = "parameter_type_id")
     private ParameterType parameterType;
+    private String observation;
 }

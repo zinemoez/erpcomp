@@ -4,8 +4,8 @@ import com.erp.erp.dto.DailyParameterDTO;
 import com.erp.erp.entity.DailyParameter;
 import com.erp.erp.entity.ParameterType;
 import com.erp.erp.repository.ParameterTypeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,22 +13,23 @@ import org.springframework.stereotype.Service;
 public class DailyParameterMapper {
 
     private final ParameterTypeRepository parameterTypeRepository;
+    private final ParameterTypeMapper parameterTypeMapper;
 
-    // Convert DailyParameter entity to DailyParameterDTO
+    // Convertir DailyParameter (Entity) → DailyParameterDTO
     public DailyParameterDTO toDTO(DailyParameter dailyParameter) {
         if (dailyParameter == null) {
             return null;
         }
 
         return DailyParameterDTO.builder()
-                .id(dailyParameter.getId())
                 .value(dailyParameter.getValue())
                 .date(dailyParameter.getDate())
-                .parameterType(dailyParameter.getParameterType() != null ? dailyParameter.getParameterType().getId() : null)
+                .observation(dailyParameter.getObservation())
+                .parameterType(parameterTypeMapper.toDTO(dailyParameter.getParameterType()))
                 .build();
     }
 
-    // Convert DailyParameterDTO to DailyParameter entity
+    // Convertir DailyParameterDTO → DailyParameter (Entity)
     public DailyParameter toEntity(DailyParameterDTO dto) {
         if (dto == null) {
             return null;
@@ -36,14 +37,17 @@ public class DailyParameterMapper {
 
         DailyParameter dailyParameter = new DailyParameter();
         dailyParameter.setValue(dto.getValue());
+        dailyParameter.setObservation(dto.getObservation());
 
-        if (dto.getParameterType() != null) {
-            ParameterType parameterType = parameterTypeRepository.findById(dto.getParameterType())
-                    .orElseThrow(() -> new IllegalArgumentException("ParameterType not found with id: " + dto.getParameterType()));
+        dailyParameter.setDate(dto.getDate() != null ? dto.getDate() : new java.util.Date());
+
+        if (dto.getParameterType() != null && dto.getParameterType().getId() != null) {
+            ParameterType parameterType = parameterTypeRepository
+                    .findById(dto.getParameterType().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("ParameterType not found with ID: " + dto.getParameterType().getId()));
             dailyParameter.setParameterType(parameterType);
         }
 
         return dailyParameter;
     }
 }
-

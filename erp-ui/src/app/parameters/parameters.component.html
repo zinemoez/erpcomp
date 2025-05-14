@@ -5,6 +5,11 @@
       <nav class="bg-light p-3 h-100">
         <h6 class="mb-4">Équipements de l'unité {{ departmentId }}</h6>
         <ul class="nav nav-pills flex-column">
+          <li class="nav-item" >
+            <a class="nav-link" (click)="getParametersByDepartmentId(departmentId)">
+             tout les parametres
+            </a>
+          </li>
           <li class="nav-item" *ngFor="let equi of equipments">
             <a class="nav-link" (click)="getParmetersByEquipmentId(equi.id)">
               {{ equi.name }}
@@ -13,15 +18,13 @@
         </ul>
       </nav>
     </div>
-
     <!-- Main content -->
     <div class="col-md-9">
       <div class="d-flex justify-content-end mb-2">
-        <button class="btn btn-primary" (click)="openAddModal()" data-bs-toggle="modal" data-bs-target="#addParameterModal">
+        <button class="btn btn-primary" (click)="openAddParameterModal() " data-bs-toggle="modal" data-bs-target="#addParameterModal">
           Ajouter Paramètre
         </button>
       </div>
-
       <table class="table table-bordered">
         <thead class="table-light">
         <tr>
@@ -47,10 +50,10 @@
             <td>{{ param.max }}</td>
             <td>
               <div>
-              <button class="btn btn-info btn-sm m-1" (click)="getDailyParameters(param.id)">
+              <button class="btn btn-info btn-sm m-1" (click)="openAddDailyParmeterModal()" data-bs-toggle="modal" data-bs-target="#addDailyParameterModal">
                 Paramètres Journaliers
               </button>
-              <button class="btn btn-primary btn-sm m-1" (click)="openAddModal(); getPrameterTypeById(param.id)" data-bs-toggle="modal" data-bs-target="#addParameterModal" >
+              <button class="btn btn-primary btn-sm m-1" (click)="openAddParameterModal(); getPrameterTypeById(param.id)" data-bs-toggle="modal" data-bs-target="#addParameterModal" >
                 Modifier
               </button>
               <button class="btn btn-danger btn-sm m-1" (click)=" supprimererParameter(param.id) ">
@@ -60,20 +63,31 @@
             </td>
           </tr>
         </ng-container>
-
-        <ng-container *ngFor="let daily of dailyParameters">
-          <tr>
-            <td colspan="3">{{ daily.date }}</td>
-            <td colspan="5">{{ daily.value }}</td>
-          </tr>
-        </ng-container>
+        </tbody>
+      </table>
+      <table class="table table-bordered">
+        <thead class="table-light">
+        <tr>
+          <th>Date</th>
+          <th>Id</th>
+          <th>Valeur</th>
+          <th>Observation</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr  *ngFor="let daily of dailyParameters">
+          <td [ngClass]="{'text-danger': daily.observation === 'faible' || daily.observation === 'élevée'}">{{ daily.date | date:'dd/M/yyyy HH:mm:ss' }}</td>
+          <td [ngClass]="{'text-danger': daily.observation === 'faible' || daily.observation === 'élevée'}">{{daily.parameterType.id}}:{{daily.parameterType.name}} {{daily.parameterType.position}} {{daily.parameterType.equipmentId}} </td>
+          <td [ngClass]="{'text-danger': daily.observation === 'faible' || daily.observation === 'élevée'}">{{ daily.value }}</td>
+          <td [ngClass]="{'text-danger': daily.observation === 'faible' || daily.observation === 'élevée'}">
+            {{ daily.observation }}
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
   </div>
 </div>
-
-<!-- Modal Bootstrap (placée en dehors du contenu principal) -->
 <div class="modal fade" id="addParameterModal" tabindex="-1" aria-labelledby="addParameterModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -119,6 +133,29 @@
               <label class="form-label">Max</label>
               <input type="number" class="form-control" [(ngModel)]="newParameter.max" name="max">
             </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-success" >Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addDailyParameterModal" tabindex="-1" aria-labelledby="addDailyParameterLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form (ngSubmit)="onSubmitDailyParameter()" #parameterForm="ngForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addDailyParameterLabel">Ajouter un daily Parametre</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+              <label class="form-label">Value</label>
+              <input type="number" class="form-control" [(ngModel)]="newDailyParameter.value" name="value" required>
           </div>
         </div>
         <div class="modal-footer">

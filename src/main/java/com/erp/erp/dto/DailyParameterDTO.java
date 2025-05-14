@@ -16,9 +16,8 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DailyParameterDTO {
-    private Long id;
     private Date date;
     private Double value;
-    private POSITION position;
-    private Long parameterType;
+    private ParameterTypeDTO parameterType;
+    private String observation;
 }

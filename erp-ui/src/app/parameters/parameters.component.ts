@@ -1,25 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgForOf } from '@angular/common';
+import {DatePipe, NgClass, NgForOf} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-
 import { DailyParameterService } from '../services/daily-parameter.service';
 import { ParameterTypeService } from '../services/parameter-type.service';
 import { EquipmentService } from '../services/equipment-service.service';
-
 import { ParameterType } from '../models/parameterType';
 import { Equipment } from '../models/equipment-model';
 import { DailyParameter } from '../models/dailyParameter';
 import { Position } from '../models/Position';
 import { Unit } from '../models/unit';
-import { Poste } from '../models/poste-model';
 import { ParamType } from '../models/ParamType';
 
 @Component({
   selector: 'app-parameters',
   standalone: true,
-  imports: [NgForOf, FormsModule],
+  imports: [NgForOf, FormsModule, DatePipe, NgClass],
   templateUrl: './parameters.component.html',
   styleUrls: ['./parameters.component.css']
 })
@@ -29,11 +26,13 @@ export class ParametersComponent implements OnInit {
   departmentId!: string;
   equipments: Equipment[] = [];
   dailyParameters: DailyParameter[] = [];
+  newDailyParameter!: DailyParameter;
   selectedEquipmentId: string = '';
+  selectedParameter!: ParameterType;
   positionEnum: Position[] = [];
   unitEnum: Unit[] = [];
   parmaTypeEnum: ParamType[] = [];
-  parameterType!:ParameterType
+  parameterType!: ParameterType
 
   constructor(
     private router: Router,
@@ -41,7 +40,8 @@ export class ParametersComponent implements OnInit {
     private dailyParameterService: DailyParameterService,
     private typeParametersService: ParameterTypeService,
     private equipmentService: EquipmentService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.departmentId = this.activeRoute.snapshot.paramMap.get('id')!;
@@ -49,10 +49,10 @@ export class ParametersComponent implements OnInit {
     this.positionEnum = this.getPositions();
     this.unitEnum = this.getUnits();
     this.parmaTypeEnum = this.getParamTypes();
-    this.getParametersByDepartmentId(this.departmentId);
+   this.getParametersByDepartmentId(this.departmentId);
   }
 
-  openAddModal() {
+  openAddParameterModal() {
     this.newParameter = {} as ParameterType;
   }
 
@@ -64,7 +64,7 @@ export class ParametersComponent implements OnInit {
         this.dailyParameters = [];
 
         for (let param of this.parameters) {
-          this.getDailyParameters(param.id);
+          this.getDailyParameters(param);
         }
       },
       error: (err) => {
@@ -81,7 +81,7 @@ export class ParametersComponent implements OnInit {
         this.dailyParameters = [];
 
         for (let param of this.parameters) {
-          this.getDailyParameters(param.id);
+          this.getDailyParameters(param);
         }
       },
       error: (err) => {
@@ -93,6 +93,7 @@ export class ParametersComponent implements OnInit {
   getEquipmentByDepartmentsId(id: string) {
     this.equipmentService.getEquipmentByDepartmentId(id).subscribe({
       next: (data) => {
+        console.log('Équipements reçus :', data); // <-- Vérifie ici
         this.equipments = data;
       },
       error: (err) => {
@@ -113,16 +114,18 @@ export class ParametersComponent implements OnInit {
     return Object.values(ParamType);
   }
 
-  getDailyParameters(paramTypeId: number) {
-    this.dailyParameterService.getByParameterTypeId(paramTypeId).subscribe({
+  getDailyParameters(paramType: ParameterType) {
+    this.selectedParameter = paramType
+    this.dailyParameterService.getByParameterTypeId(paramType.id).subscribe({
       next: (data) => {
-        this.dailyParameters.push(...data);
+        this.dailyParameters = data;
       },
       error: (err) => {
         console.error('Erreur lors de la récupération des paramètres journaliers :', err);
       }
     });
   }
+
   supprimererParameter(id: number) {
     Swal.fire({
       title: 'Confirmation',
@@ -146,6 +149,7 @@ export class ParametersComponent implements OnInit {
       }
     });
   }
+
   onSubmitParameter() {
     if (!this.selectedEquipmentId) {
       alert('Aucun équipement sélectionné.');
@@ -179,15 +183,68 @@ export class ParametersComponent implements OnInit {
       }
     });
   }
-  getPrameterTypeById(id:number){
+
+  getPrameterTypeById(id: number) {
     this.typeParametersService.getById(id).subscribe({
       next: (data) => {
-
-        this.parameterType=data
+        this.parameterType = data
         this.newParameter = this.parameterType as ParameterType;
 
       },
-      error: (err) => {err.error()}
+      error: (err) => {
+        err.error()
+      }
     })
+
   }
+
+  onSubmitDailyParameter() {
+    if (!this.selectedEquipmentId) {
+      alert('Aucun équipement sélectionné.');
+      return;
+    }
+
+    const dailyParamToSend: DailyParameter = {
+      ...this.newDailyParameter,
+      parameterType: this.selectedParameter,
+      date: new Date(),
+      observation:'accpetable'
+    };
+
+    Swal.fire({
+      title: 'Confirmation',
+      text: `Voulez-vous vraiment créer le DAILY paramètre ${this.newDailyParameter || 'sans nom'} ?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, Ajouter',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (dailyParamToSend.value > dailyParamToSend.parameterType.max) {
+          dailyParamToSend.observation = 'élevée';
+        } else if (dailyParamToSend.value < dailyParamToSend.parameterType.min) {
+          dailyParamToSend.observation = 'faible';
+        } else {
+          dailyParamToSend.observation = 'acceptable';
+        }
+        this.dailyParameterService.create(dailyParamToSend).subscribe({
+          next: () => {
+            console.log(dailyParamToSend)
+            Swal.fire('Ajouté!', 'Le paramètre a été ajouté avec succès.', 'success');
+            this.getParmetersByEquipmentId(this.selectedEquipmentId);
+            this.newDailyParameter = {} as DailyParameter;
+          },
+          error: (err) => {
+            Swal.fire('Erreur', err.error?.message || 'Erreur inconnue lors de l\'ajout.', 'error');
+          }
+        });
+      }
+    });
+  }
+
+
+  openAddDailyParmeterModal() {
+    this.newDailyParameter ={} as DailyParameter;
+    };
+
 }

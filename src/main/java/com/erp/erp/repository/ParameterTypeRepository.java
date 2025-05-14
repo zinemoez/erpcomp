@@ -9,7 +9,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ParameterTypeRepository extends JpaRepository<ParameterType, Long> {
-    List<ParameterType> findByEquipmentId(String equipmentId); // ex : pour lister les paramètres d’un équipement
+    @Query("SELECT par from ParameterType par where par.equipment.id=:id")
+    List<ParameterType> findByEquipmentId(@Param("id") String id); // ex : pour lister les paramètres d’un équipement
     @Query("SELECT par from ParameterType par where par.equipment.department.id=:id")
     List<ParameterType> findByDepartmentId(@Param("id")  String id);
 }
